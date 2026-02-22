@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spatial AI & XR in Education - Interactive Module</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #1B365D; --primary-light: #2A4F7F; --accent: #F2A900; --accent-light: #FFB84D;
+            --white: #FFFFFF; --light-gray: #F5F5F5; --dark-gray: #333; --text: #1A1A1A;
+            --border: #DDD; --success: #4CAF50; --error: #F44336;
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--primary); overflow: hidden; color: var(--text); height: 100vh; width: 100vw; }
+        .container { display: flex; flex-direction: column; height: 100vh; width: 100vw; position: relative; }
+        .content-area { flex: 1; overflow: hidden; position: relative; background: var(--white); }
+
+        /* SLIDE SYSTEM — !important prevents overrides */
+        .slide { display: none !important; height: 100%; width: 100%; padding: 60px 80px; overflow-y: auto; position: absolute; top: 0; left: 0; flex-direction: column; }
+        .slide.active { display: flex !important; animation: slideIn 0.4s ease; }
+        @keyframes slideIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Slide Types (NO display property!) */
+        .slide-title {
+            background: linear-gradient(rgba(27,54,93,0.88), rgba(27,54,93,0.95)), url('https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=1920&q=80') center/cover;
+            color: var(--white); justify-content: center; align-items: center; text-align: center; padding: 0 !important; position: relative; overflow: hidden;
+        }
+        .slide-title h1 { font-family: 'Montserrat', sans-serif; font-size: 3.2rem; margin-bottom: 30px; font-weight: 800; line-height: 1.2; animation: fadeInUp 0.8s ease; z-index: 2; position: relative; color: var(--white) !important; text-shadow: 0 2px 10px rgba(0,0,0,0.4); }
+        .slide-title .meta { font-size: 1.1rem; margin-bottom: 20px; opacity: 0.95; z-index: 2; position: relative; animation: fadeInUp 1s ease; }
+        .slide-title .meta strong, .slide-title .meta em { display: block; }
+        .slide-title .meta em { font-style: normal; font-size: 0.95rem; }
+        .author-badge { display: inline-block; background: var(--accent); color: var(--primary); padding: 6px 18px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; margin-top: 10px; letter-spacing: 0.5px; z-index: 2; position: relative; }
+
+        .slide-content { background: var(--white); padding: 60px 80px !important; }
+        .slide-divider {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light), var(--accent)); background-size: 400% 400%;
+            animation: gradientShift 8s ease infinite; color: var(--white); justify-content: center; align-items: center; text-align: center; padding: 0 !important; position: relative;
+        }
+        .slide-divider::before, .slide-divider::after { content: ''; position: absolute; left: 10%; right: 10%; height: 2px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent); }
+        .slide-divider::before { top: 30%; } .slide-divider::after { bottom: 30%; }
+        .slide-divider h2 { font-family: 'Montserrat', sans-serif; font-size: 3rem; font-weight: 800; color: var(--white) !important; animation: fadeInUp 0.6s ease; z-index: 2; text-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+        .slide-divider p { z-index: 2; animation: fadeInUp 0.8s ease; color: rgba(255,255,255,0.95) !important; text-shadow: 0 1px 4px rgba(0,0,0,0.2); }
+
+        .quiz-container { background: var(--white); justify-content: flex-start; padding: 60px 80px !important; }
+
+        /* Typography */
+        .slide.active h2 { font-family: 'Montserrat', sans-serif; font-size: 2.2rem; color: var(--primary); margin-bottom: 30px; font-weight: 700; animation: fadeInUp 0.5s ease; }
+        .slide.active h3 { font-family: 'Montserrat', sans-serif; font-size: 1.4rem; color: var(--primary-light); margin-bottom: 15px; font-weight: 600; }
+        .slide p, .slide li { font-size: 1.05rem; line-height: 1.7; color: var(--text); margin-bottom: 12px; }
+        .slide-title p, .slide-title li, .slide-divider p, .slide-divider li { color: var(--white) !important; }
+        .slide ul { list-style: none; margin-bottom: 25px; }
+        .slide li { padding-left: 25px; position: relative; margin-bottom: 10px; }
+        .slide li:before { content: "▸"; position: absolute; left: 0; color: var(--accent); font-size: 1.3rem; }
+
+        /* Animations */
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(25px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInLeft { from { opacity: 0; transform: translateX(-25px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes confettiFall { 0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+        @keyframes shake { 0%,100% { transform: translateX(0); } 20%,60% { transform: translateX(-8px); } 40%,80% { transform: translateX(8px); } }
+        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+        /* Floating Particles on Title */
+        .particle { position: absolute; border-radius: 50%; background: rgba(242,169,0,0.3); animation: float 4s ease-in-out infinite; z-index: 1; }
+
+        /* Begin Button */
+        .begin-button { margin-top: 40px; padding: 16px 50px; background: var(--accent); color: var(--white); border: none; border-radius: 8px; font-size: 1.2rem; font-weight: 700; cursor: pointer; transition: all 0.3s; font-family: 'Inter', sans-serif; animation: pulse 2s infinite; z-index: 2; position: relative; }
+        .begin-button:hover { background: #E09800; transform: translateY(-3px); box-shadow: 0 8px 25px rgba(242,169,0,0.4); }
+
+        /* Module Progress Tracker */
+        .module-progress { display: flex; gap: 5px; margin-bottom: 25px; flex-wrap: wrap; animation: fadeInUp 0.3s ease; }
+        .progress-step { padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background: var(--light-gray); color: var(--dark-gray); transition: all 0.3s; }
+        .progress-step.active { background: var(--accent); color: var(--white); transform: scale(1.05); }
+        .progress-step.completed { background: var(--primary); color: var(--white); }
+
+        /* Two-column Image Layout */
+        .image-text-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; margin: 20px 0; }
+        .slide-image { width: 100%; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); object-fit: cover; max-height: 350px; }
+
+        /* Quiz Styles */
+        .quiz-question { font-family: 'Montserrat', sans-serif; font-size: 1.6rem; color: var(--primary); margin-bottom: 30px; font-weight: 600; }
+        .quiz-options { display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px; }
+        .quiz-option { display: flex; align-items: center; padding: 16px 20px; border: 2px solid var(--border); border-radius: 8px; cursor: pointer; transition: all 0.3s; background: var(--white); }
+        .quiz-option:hover { border-color: var(--accent); background: rgba(242,169,0,0.05); }
+        .quiz-option input[type="radio"] { margin-right: 12px; cursor: pointer; width: 18px; height: 18px; accent-color: var(--accent); }
+        .quiz-option span { flex: 1; cursor: pointer; font-size: 1rem; color: var(--text); }
+        .quiz-option input:checked ~ span { font-weight: 600; }
+        .quiz-option .option-letter { flex: 0 0 32px; width: 32px; height: 32px; border-radius: 50%; background: var(--light-gray); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; margin-right: 12px; }
+        .quiz-buttons { display: flex; gap: 15px; margin-top: 30px; }
+        .btn { padding: 12px 28px; font-size: 1rem; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; font-family: 'Inter', sans-serif; }
+        .btn-primary { background: var(--accent); color: var(--white); }
+        .btn-primary:hover:not(:disabled) { background: #E09800; transform: translateY(-2px); }
+        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+        .feedback-banner { margin-top: 25px; padding: 18px; border-radius: 8px; font-weight: 600; display: none; animation: fadeInUp 0.4s ease; }
+        .feedback-banner.show { display: block; }
+        .feedback-correct { background: #E8F5E9; border-left: 5px solid var(--success); color: #1B5E20; }
+        .feedback-incorrect { background: #FFEBEE; border-left: 5px solid var(--error); color: #B71C1C; }
+        .feedback-content { font-size: 0.95rem; margin-bottom: 10px; }
+
+        /* Flip Cards */
+        .flip-cards-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin: 25px 0; }
+        .flip-card { perspective: 1000px; height: 280px; cursor: pointer; animation: scaleIn 0.5s ease forwards; }
+        .flip-card:nth-child(2) { animation-delay: 0.15s; } .flip-card:nth-child(3) { animation-delay: 0.3s; }
+        .flip-card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
+        .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 25px; text-align: center; border-radius: 10px; }
+        .flip-card-front { background: linear-gradient(135deg, var(--primary-light), var(--primary)); color: var(--white); font-weight: 700; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(27,54,93,0.3); }
+        .flip-card:hover .flip-card-front { box-shadow: 0 6px 25px rgba(242,169,0,0.4); }
+        .flip-card-back { background: var(--light-gray); color: var(--text); transform: rotateY(180deg); border: 2px solid var(--border); }
+        .flip-card-back-content { font-size: 0.95rem; line-height: 1.6; }
+        .flip-indicator { position: absolute; top: 10px; right: 12px; font-size: 1.2rem; opacity: 0.7; animation: float 3s ease-in-out infinite; }
+
+        /* Tabs */
+        .tabs-container { margin: 25px 0; }
+        .tabs-header { display: flex; gap: 8px; border-bottom: 3px solid var(--light-gray); margin-bottom: 25px; flex-wrap: wrap; }
+        .tab-button { padding: 12px 22px; background: none; border: none; border-bottom: 3px solid transparent; font-size: 0.95rem; font-weight: 600; color: var(--text); cursor: pointer; transition: all 0.3s; font-family: 'Inter', sans-serif; }
+        .tab-button:hover { color: var(--accent); }
+        .tab-button.active { color: var(--accent); border-bottom-color: var(--accent); }
+        .tab-panel { display: none; animation: fadeInUp 0.3s ease; }
+        .tab-panel.active { display: block; }
+        .tab-panel h4 { color: var(--primary); font-size: 1.2rem; margin-bottom: 12px; font-weight: 600; }
+        .tab-panel p { font-size: 1rem; line-height: 1.7; }
+
+        /* Accordion */
+        .accordion-container { margin: 25px 0; }
+        .accordion-item { border: 2px solid var(--border); border-radius: 8px; margin-bottom: 12px; overflow: hidden; }
+        .accordion-header { background: var(--light-gray); padding: 18px 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600; color: var(--primary); transition: all 0.3s; user-select: none; }
+        .accordion-header:hover { background: rgba(242,169,0,0.1); color: var(--accent); }
+        .accordion-header.active { background: var(--accent); color: var(--white); }
+        .accordion-icon { font-size: 1.2rem; transition: transform 0.3s; }
+        .accordion-header.active .accordion-icon { transform: rotate(180deg); }
+        .accordion-content { display: none; padding: 0 20px; background: var(--white); border-top: 2px solid var(--border); }
+        .accordion-content.active { display: block; padding: 20px; }
+        .accordion-content p { font-size: 1rem; line-height: 1.7; margin-bottom: 10px; }
+
+        /* Carousel */
+        .carousel-container { margin: 25px 0; background: var(--light-gray); border-radius: 10px; overflow: hidden; }
+        .carousel-slides { position: relative; height: 350px; overflow: hidden; }
+        .carousel-slide { display: none; position: absolute; width: 100%; height: 100%; padding: 35px; }
+        .carousel-slide.active { display: flex; flex-direction: column; justify-content: center; animation: fadeInUp 0.3s ease; }
+        .carousel-slide h4 { color: var(--primary); font-size: 1.4rem; margin-bottom: 18px; font-weight: 600; }
+        .carousel-slide p { font-size: 1rem; line-height: 1.7; }
+        .carousel-controls { display: flex; justify-content: space-between; align-items: center; padding: 18px 35px; background: var(--white); border-top: 1px solid var(--border); }
+        .carousel-button { background: var(--primary); color: var(--white); border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
+        .carousel-button:hover { background: var(--primary-light); transform: scale(1.05); }
+        .carousel-dots { display: flex; gap: 8px; }
+        .carousel-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border); cursor: pointer; transition: all 0.3s; }
+        .carousel-dot.active { background: var(--accent); width: 24px; border-radius: 5px; }
+
+        /* Click to Reveal */
+        .click-reveal-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; margin: 25px 0; }
+        .click-reveal-item { padding: 20px; border: 2px solid var(--border); border-left: 4px solid var(--accent); border-radius: 8px; cursor: pointer; background: var(--white); transition: all 0.3s; min-height: 130px; display: flex; flex-direction: column; justify-content: center; text-align: center; animation: fadeInUp 0.5s ease forwards; }
+        .click-reveal-item:nth-child(2) { animation-delay: 0.15s; } .click-reveal-item:nth-child(3) { animation-delay: 0.3s; }
+        .click-reveal-item:hover { border-color: var(--accent); box-shadow: 0 4px 15px rgba(242,169,0,0.2); transform: translateY(-3px); }
+        .click-reveal-title { font-weight: 600; color: var(--primary); font-size: 1.05rem; margin-bottom: 8px; }
+        .click-reveal-content { font-size: 0.95rem; color: var(--text); line-height: 1.6; display: none; text-align: left; margin-top: 10px; }
+        .click-reveal-content.revealed { display: block; animation: fadeInUp 0.3s ease; }
+        .click-hint { font-size: 0.8rem; color: var(--accent); font-weight: 600; margin-top: 8px; }
+
+        /* Video */
+        .video-container { position: relative; width: 100%; max-width: 780px; margin: 30px auto; background: var(--dark-gray); border-radius: 10px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+        .video-wrapper { position: relative; width: 100%; padding-bottom: 56.25%; height: 0; }
+        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+        .video-fallback { display: none; position: relative; cursor: pointer; text-decoration: none; }
+        .video-fallback img { width: 100%; display: block; }
+        .video-fallback-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 70px; height: 48px; background: rgba(255,0,0,0.85); border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+        .video-fallback-play { width: 0; height: 0; border-left: 18px solid white; border-top: 10px solid transparent; border-bottom: 10px solid transparent; margin-left: 4px; }
+
+        /* Learning Pyramid Bars */
+        .pyramid-bar { display: flex; align-items: center; gap: 15px; margin-bottom: 10px; opacity: 0; animation: fadeInLeft 0.5s ease forwards; }
+        .pyramid-bar:nth-child(1) { animation-delay: 0.1s; } .pyramid-bar:nth-child(2) { animation-delay: 0.2s; }
+        .pyramid-bar:nth-child(3) { animation-delay: 0.3s; } .pyramid-bar:nth-child(4) { animation-delay: 0.4s; }
+        .pyramid-bar:nth-child(5) { animation-delay: 0.5s; } .pyramid-bar:nth-child(6) { animation-delay: 0.6s; }
+        .pyramid-bar:nth-child(7) { animation-delay: 0.7s; }
+        .pyramid-pct { min-width: 70px; padding: 12px; text-align: center; border-radius: 8px; font-weight: 700; color: var(--white); font-size: 1.1rem; }
+        .pyramid-label { flex: 1; padding: 12px; border-radius: 6px; font-size: 0.95rem; }
+
+        /* Score Circle */
+        .results-container { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 30px; }
+        .score-circle { width: 140px; height: 140px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--accent)); display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--white); margin-bottom: 35px; box-shadow: 0 8px 25px rgba(0,0,0,0.2); animation: scaleIn 0.6s ease; }
+        .score-number { font-size: 2.8rem; font-weight: 800; font-family: 'Montserrat', sans-serif; }
+        .score-label { font-size: 0.85rem; margin-top: 3px; color: var(--white); font-weight: 600; }
+        .results-text h3 { color: var(--primary); font-size: 1.6rem; margin-bottom: 18px; font-family: 'Montserrat', sans-serif; }
+        .results-text p { font-size: 1.05rem; line-height: 1.7; margin-bottom: 12px; }
+
+        /* Confetti */
+        .confetti-piece { position: fixed; width: 10px; height: 10px; z-index: 9999; animation: confettiFall 3s ease-out forwards; pointer-events: none; }
+
+        /* Playbar */
+        .playbar { background: var(--primary); color: var(--white); display: flex; align-items: center; justify-content: space-between; padding: 10px 18px; height: 60px; gap: 12px; }
+        .playbar-left, .playbar-right { display: flex; align-items: center; gap: 12px; flex: 0 0 auto; }
+        .playbar-center { flex: 1; display: flex; align-items: center; gap: 12px; min-width: 0; }
+        .playbar-button { background: none; border: none; color: var(--white); cursor: pointer; font-size: 1.2rem; transition: all 0.3s; padding: 6px 10px; display: flex; align-items: center; justify-content: center; min-width: 36px; height: 36px; border-radius: 4px; }
+        .playbar-button:hover { background: rgba(255,255,255,0.2); }
+        .playbar-button:disabled { opacity: 0.4; cursor: not-allowed; }
+        .progress-bar { flex: 1; height: 5px; background: rgba(255,255,255,0.3); border-radius: 3px; cursor: pointer; min-width: 80px; }
+        .progress-fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.1s linear; }
+        .slide-counter { font-size: 0.85rem; font-weight: 600; min-width: 50px; text-align: right; }
+
+        /* TOC */
+        .toc-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; }
+        .toc-overlay.active { display: block; }
+        .toc-sidebar { position: fixed; left: 0; top: 0; bottom: 0; width: 300px; background: var(--white); box-shadow: 2px 0 8px rgba(0,0,0,0.2); z-index: 1000; display: none; flex-direction: column; }
+        .toc-sidebar.active { display: flex; animation: slideInLeft 0.3s ease; }
+        @keyframes slideInLeft { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+        .toc-header { display: flex; justify-content: space-between; align-items: center; padding: 18px; border-bottom: 2px solid var(--border); }
+        .toc-header h3 { font-family: 'Montserrat', sans-serif; font-size: 1.2rem; color: var(--primary); margin: 0; }
+        .toc-close { background: none; border: none; font-size: 1.4rem; color: var(--primary); cursor: pointer; }
+        .toc-list { flex: 1; overflow-y: auto; padding: 8px 0; }
+        .toc-item { padding: 12px 18px; cursor: pointer; border-left: 4px solid transparent; transition: all 0.3s; font-size: 0.9rem; color: var(--text); }
+        .toc-item:hover { background: var(--light-gray); border-left-color: var(--accent); }
+        .toc-item.active { background: rgba(242,169,0,0.1); border-left-color: var(--accent); font-weight: 600; color: var(--primary); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .slide { padding: 30px 20px; }
+            .slide.active h2 { font-size: 1.8rem; }
+            .slide-content { padding: 30px 20px !important; }
+            .quiz-container { padding: 30px 20px !important; }
+            .image-text-layout { grid-template-columns: 1fr; }
+            .flip-cards-container { grid-template-columns: 1fr; }
+            .toc-sidebar { width: 250px; }
+            .playbar { flex-wrap: wrap; height: auto; padding: 8px; }
+            .module-progress { display: none; }
+        }
+
+        /* Accessibility */
+        .playbar-button:focus, .tab-button:focus, .btn:focus, .quiz-option:focus-within { outline: 3px solid var(--accent); outline-offset: 2px; }
+        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="content-area" id="contentArea">
+
+            <!-- SLIDE 1: Title -->
+            <div class="slide slide-title active">
+                <div class="particle" style="width:15px;height:15px;top:20%;left:15%;animation-delay:0s;"></div>
+                <div class="particle" style="width:10px;height:10px;top:40%;left:80%;animation-delay:1s;"></div>
+                <div class="particle" style="width:20px;height:20px;top:70%;left:25%;animation-delay:2s;"></div>
+                <div class="particle" style="width:8px;height:8px;top:30%;left:60%;animation-delay:0.5s;"></div>
+                <div class="particle" style="width:12px;height:12px;top:80%;left:70%;animation-delay:1.5s;"></div>
+                <div class="particle" style="width:18px;height:18px;top:15%;left:45%;animation-delay:3s;"></div>
+                <h1>How Spatial & XR AI Are Changing the Future of Teaching</h1>
+                <div class="meta">
+                    <strong>Created by Dominique Wu</strong>
+                    <em>Adjunct Instructor, Cañada College</em>
+                    <span class="author-badge">CCCCO AI Fellow</span>
+                    <em style="margin-top:10px;font-size:0.85rem;">wudominique@smccd.edu | dwu@cccco.edu</em>
+                </div>
+                <button class="begin-button" onclick="nextSlide()">Begin Course ▸</button>
+            </div>
+
+            <!-- SLIDE 2: Pre-Assessment Intro -->
+            <div class="slide slide-content">
+                <h2>Pre-Assessment</h2>
+                <p style="font-size:1.15rem;color:var(--primary);margin-bottom:25px;">Before we dive into Spatial AI and XR, let's discover what you already know.</p>
+                <p>This quick assessment will help personalize your learning experience. Don't worry about getting the "right" answer — this is about understanding your starting point!</p>
+                <div style="margin-top:40px;padding:25px;background:var(--light-gray);border-radius:10px;border-left:5px solid var(--accent);">
+                    <h3 style="margin-top:0;">What to Expect</h3>
+                    <ul>
+                        <li>3 quick questions about Spatial AI, XR, and immersive technology</li>
+                        <li>Instant feedback for each answer</li>
+                        <li>A brief summary of your baseline knowledge</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- SLIDE 3: Pre-Assessment Q1 -->
+            <div class="slide quiz-container">
+                <h2>Pre-Assessment — Question 1 of 3</h2>
+                <div class="quiz-question">Which of the following best describes Spatial AI?</div>
+                <div class="quiz-options">
+                    <label class="quiz-option"><span class="option-letter">A</span><input type="radio" name="q1" value="a"><span>AI that understands and interprets the physical world, including objects, surfaces, depth, and spatial relationships</span></label>
+                    <label class="quiz-option"><span class="option-letter">B</span><input type="radio" name="q1" value="b"><span>AI that generates entirely virtual worlds for gaming</span></label>
+                    <label class="quiz-option"><span class="option-letter">C</span><input type="radio" name="q1" value="c"><span>A chatbot that answers questions about space and astronomy</span></label>
+                    <label class="quiz-option"><span class="option-letter">D</span><input type="radio" name="q1" value="d"><span>Software that generates images from text descriptions</span></label>
+                </div>
+                <div class="quiz-buttons"><button class="btn btn-primary" onclick="submitQuiz('q1','a','Correct! Spatial AI understands the physical world — objects, surfaces, depth, motion, and spatial context.')">Submit Answer</button></div>
+                <div id="q1Feedback" class="feedback-banner"><div class="feedback-content"></div></div>
+            </div>
+
+            <!-- SLIDE 4: Pre-Assessment Q2 -->
+            <div class="slide quiz-container">
+                <h2>Pre-Assessment — Question 2 of 3</h2>
+                <div class="quiz-question">What does XR stand for?</div>
+                <div class="quiz-options">
+                    <label class="quiz-option"><span class="option-letter">A</span><input type="radio" name="q2" value="a"><span>Extended Reality (umbrella term for AR, VR, and MR)</span></label>
+                    <label class="quiz-option"><span class="option-letter">B</span><input type="radio" name="q2" value="b"><span>Extra Reality, a new gaming platform</span></label>
+                    <label class="quiz-option"><span class="option-letter">C</span><input type="radio" name="q2" value="c"><span>Extreme Reality, used only for military training</span></label>
+                    <label class="quiz-option"><span class="option-letter">D</span><input type="radio" name="q2" value="d"><span>Experience Reality, a social media filter technology</span></label>
+                </div>
+                <div class="quiz-buttons"><button class="btn btn-primary" onclick="submitQuiz('q2','a','Correct! XR (Extended Reality) is an umbrella term that includes AR, VR, and MR.')">Submit Answer</button></div>
+                <div id="q2Feedback" class="feedback-banner"><div class="feedback-content"></div></div>
+            </div>
+
+            <!-- SLIDE 5: Pre-Assessment Q3 -->
+            <div class="slide quiz-container">
+                <h2>Pre-Assessment — Question 3 of 3</h2>
+                <div class="quiz-question">Have you used any immersive technology (AR/VR/MR) in an educational setting?</div>
+                <div class="quiz-options">
+                    <label class="quiz-option"><span class="option-letter">A</span><input type="radio" name="q3" value="a"><span>Yes, frequently in my teaching or learning</span></label>
+                    <label class="quiz-option"><span class="option-letter">B</span><input type="radio" name="q3" value="b"><span>Yes, once or twice, but not regularly</span></label>
+                    <label class="quiz-option"><span class="option-letter">C</span><input type="radio" name="q3" value="c"><span>No, but I'm very interested in trying it</span></label>
+                    <label class="quiz-option"><span class="option-letter">D</span><input type="radio" name="q3" value="d"><span>No, and I'm not sure how it would fit in my discipline</span></label>
+                </div>
+                <div class="quiz-buttons"><button class="btn btn-primary" onclick="submitQuiz('q3','any','Great! Your answer helps us understand where you are starting from. You will discover practical ways to integrate these technologies regardless of experience level.')">Submit Answer</button></div>
+                <div id="q3Feedback" class="feedback-banner"><div class="feedback-content"></div></div>
+            </div>
+
+            <!-- SLIDE 6: Pre-Assessment Results -->
+            <div class="slide slide-content">
+                <div class="results-container">
+                    <div class="score-circle"><div class="score-number" id="preAssessmentScore">0</div><div class="score-label">out of 3</div></div>
+                    <div class="results-text">
+                        <h3>Pre-Assessment Complete!</h3>
+                        <p id="preAssessmentMessage" style="font-size:1.1rem;margin-bottom:20px;">Complete the pre-assessment to see your personalized learning path.</p>
+                        <div id="preAssessmentPath" style="text-align:left;display:inline-block;max-width:600px;">
+                            <p style="font-weight:600;color:var(--primary);margin-bottom:12px;">Your Personalized Learning Path:</p>
+                            <div style="padding:15px;background:var(--light-gray);border-radius:8px;border-left:4px solid var(--accent);margin-bottom:10px;"><strong>Foundational Concepts</strong> — Spatial AI &amp; XR AI definitions, key differences, and core technologies</div>
+                            <div style="padding:15px;background:var(--light-gray);border-radius:8px;border-left:4px solid var(--accent);margin-bottom:10px;"><strong>Engagement &amp; Pedagogy</strong> — Why traditional methods fall short and how immersive tech addresses these gaps</div>
+                            <div style="padding:15px;background:var(--light-gray);border-radius:8px;border-left:4px solid var(--accent);margin-bottom:10px;"><strong>Classroom Applications</strong> — Real-world examples for community college settings</div>
+                            <div style="padding:15px;background:var(--light-gray);border-radius:8px;border-left:4px solid var(--accent);"><strong>Design &amp; Strategy</strong> — Build your own integration plan for your discipline</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 7: Learning Objectives -->
+            <div class="slide slide-content">
+                <div class="module-progress"><span class="progress-step active">Intro</span><span class="progress-step">Engagement</span><span class="progress-step">Spatial AI</span><span class="progress-step">XR AI</span><span class="progress-step">Education</span><span class="progress-step">Assessment</span></div>
+                <h2>Learning Objectives &amp; Alignments</h2>
+                <p style="margin-bottom:25px;">By the end of this module, you will be able to:</p>
+                <div style="display:grid;gap:16px;">
+                    <div style="padding:20px;background:var(--light-gray);border-left:5px solid var(--accent);border-radius:8px;">
+                        <h4 style="margin:0 0 6px;color:var(--primary);font-weight:700;">1. Identify <span style="font-size:0.75rem;font-weight:500;color:var(--accent);background:rgba(242,169,0,0.12);padding:2px 8px;border-radius:10px;margin-left:6px;">Bloom's: Knowledge</span></h4>
+                        <p style="margin:0 0 8px;">the core differences between Spatial AI and XR AI, and their applications across different fields.</p>
+                        <p style="margin:0;font-size:0.82rem;color:#666;"><strong>Content:</strong> Slides 16–20 (What is Spatial AI, XR AI, VR/AR/MR, Comparison) &nbsp;|&nbsp; <strong>Assessed:</strong> Knowledge Check 2, Final Q1</p>
+                    </div>
+                    <div style="padding:20px;background:var(--light-gray);border-left:5px solid var(--accent);border-radius:8px;">
+                        <h4 style="margin:0 0 6px;color:var(--primary);font-weight:700;">2. Analyze <span style="font-size:0.75rem;font-weight:500;color:var(--accent);background:rgba(242,169,0,0.12);padding:2px 8px;border-radius:10px;margin-left:6px;">Bloom's: Analysis</span></h4>
+                        <p style="margin:0 0 8px;">the impact of immersive technologies on student engagement and how they address traditional learning challenges.</p>
+                        <p style="margin:0;font-size:0.82rem;color:#666;"><strong>Content:</strong> Slides 8–12 (Disengagement, Learning Pyramid, Bloom's, Teacher Role) &nbsp;|&nbsp; <strong>Assessed:</strong> Knowledge Check 1, Final Q2–Q3</p>
+                    </div>
+                    <div style="padding:20px;background:var(--light-gray);border-left:5px solid var(--accent);border-radius:8px;">
+                        <h4 style="margin:0 0 6px;color:var(--primary);font-weight:700;">3. Evaluate <span style="font-size:0.75rem;font-weight:500;color:var(--accent);background:rgba(242,169,0,0.12);padding:2px 8px;border-radius:10px;margin-left:6px;">Bloom's: Evaluation</span></h4>
+                        <p style="margin:0 0 8px;">the benefits and challenges of implementing Spatial AI and XR in California Community College classrooms.</p>
+                        <p style="margin:0;font-size:0.82rem;color:#666;"><strong>Content:</strong> Slides 23–24 (XR in Education, Personalized Learning) &nbsp;|&nbsp; <strong>Assessed:</strong> Final Q4, Discussion Activity</p>
+                    </div>
+                    <div style="padding:20px;background:var(--light-gray);border-left:5px solid var(--accent);border-radius:8px;">
+                        <h4 style="margin:0 0 6px;color:var(--primary);font-weight:700;">4. Design <span style="font-size:0.75rem;font-weight:500;color:var(--accent);background:rgba(242,169,0,0.12);padding:2px 8px;border-radius:10px;margin-left:6px;">Bloom's: Synthesis</span></h4>
+                        <p style="margin:0 0 8px;">a strategy for integrating one Spatial or XR AI tool into a learning experience in your discipline.</p>
+                        <p style="margin:0;font-size:0.82rem;color:#666;"><strong>Content:</strong> Slides 24, 30–31 (Personalized Learning, Reflection, Takeaways) &nbsp;|&nbsp; <strong>Assessed:</strong> Discussion Activity Q1–Q2</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 8: Student Disengagement — Flip Cards + Image -->
+            <div class="slide slide-content">
+                <div class="module-progress"><span class="progress-step completed">Intro</span><span class="progress-step active">Engagement</span><span class="progress-step">Spatial AI</span><span class="progress-step">XR AI</span><span class="progress-step">Education</span><span class="progress-step">Assessment</span></div>
+                <h2>The Problem: Student Disengagement</h2>
+                <div class="image-text-layout">
+                    <div>
+                        <p style="margin-bottom:25px;">Traditional teaching methods often fail to engage learners effectively. <strong>Click the cards</strong> below to explore why.</p>
+                        <div class="flip-cards-container" style="grid-template-columns:1fr;">
+                            <div class="flip-card" onclick="toggleFlip(this)"><div class="flip-card-inner"><div class="flip-card-front"><span class="flip-indicator">🔄</span><div style="font-size:1.2rem;">Traditional Teaching</div><div style="font-size:0.85rem;margin-top:8px;opacity:0.8;">Click to flip</div></div><div class="flip-card-back"><div class="flip-card-back-content"><strong>Lecturing = One-way talking</strong><br><br>Knowledge retention: Only <strong>5%</strong><br><br>Students are passive receivers.</div></div></div></div>
+                            <div class="flip-card" onclick="toggleFlip(this)"><div class="flip-card-inner"><div class="flip-card-front"><span class="flip-indicator">🔄</span><div style="font-size:1.2rem;">Traditional Assessment</div><div style="font-size:0.85rem;margin-top:8px;opacity:0.8;">Click to flip</div></div><div class="flip-card-back"><div class="flip-card-back-content"><strong>Memorization = Bottom of Bloom's</strong><br><br>Easily answered by ChatGPT<br><br>Doesn't measure real understanding.</div></div></div></div>
+                        </div>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&q=80" alt="Classroom lecture" class="slide-image">
+                </div>
+            </div>
+
+            <!-- SLIDE 9: Engaging Learning — Click to Reveal + Image -->
+            <div class="slide slide-content">
+                <div class="module-progress"><span class="progress-step completed">Intro</span><span class="progress-step active">Engagement</span><span class="progress-step">Spatial AI</span><span class="progress-step">XR AI</span><span class="progress-step">Education</span><span class="progress-step">Assessment</span></div>
+                <h2>The Solution: Engaging Learning</h2>
+                <div class="image-text-layout">
+                    <div>
+                        <p style="margin-bottom:25px;">Focus on strengths that make us human. <strong>Click each area</strong> to explore:</p>
+                        <div class="click-reveal-container" style="grid-template-columns:1fr;">
+                            <div class="click-reveal-item clickable" onclick="toggleReveal(this)"><div class="click-reveal-title">🎨 Creativity</div><div class="click-hint">Click to reveal</div><div class="click-reveal-content">Let students generate original ideas and innovative solutions while AI handles repetitive tasks.</div></div>
+                            <div class="click-reveal-item clickable" onclick="toggleReveal(this)"><div class="click-reveal-title">🧩 Problem-Solving</div><div class="click-hint">Click to reveal</div><div class="click-reveal-content">Empower students to tackle complex, real-world challenges while AI provides data analysis support.</div></div>
+                            <div class="click-reveal-item clickable" onclick="toggleReveal(this)"><div class="click-reveal-title">👥 Collaboration</div><div class="click-hint">Click to reveal</div><div class="click-reveal-content">Foster teamwork as students work together on meaningful projects, with AI facilitating coordination.</div></div>
+                        </div>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=600&q=80" alt="Collaborative learning" class="slide-image">
+                </div>
+            </div>
+
+            <!-- SLIDE 10: Learning Pyramid -->
+            <div class="slide slide-content">
+                <div class="module-progress"><span class="progress-step completed">Intro</span><span class="progress-step active">Engagement</span><span class="progress-step">Spatial AI</span><span class="progress-step">XR AI</span><span class="progress-step">Education</span><span class="progress-step">Assessment</span></div>
+                <h2>The Learning Pyramid: Retention Rates</h2>
+                <p style="margin-bottom:30px;">Not all learning methods are equal. Here's how different approaches affect knowledge retention:</p>
+                <div style="display:grid;gap:10px;">
+                    <div class="pyramid-bar"><div class="pyramid-pct" style="background:#e74c3c;">5%</div><div class="pyramid-label" style="background:rgba(231,76,60,0.1);border-left:4px solid #e74c3c;"><strong>Lecturing</strong> — Passive listening</div></div>
+                    <div class="pyramid-bar"><div class="pyramid-pct" style="background:#e67e22;">10%</div><div class="pyramid-label" style="background:rgba(230,126,34,0.1);border-left:4px solid #e67e22;"><strong>Reading</strong> — Independent review</div></div>
+                    <div class="pyramid-bar"><div class="pyramid-pct" style="background:#f39c12;">20%</div><div class="pyramid-label" style="background:rgba(243,156,18,0.1);border-left:4px solid #f39c12;"><strong>Audio-Visual</strong> — Videos, animations</div></div>
+                    <div class="pyramid-bar"><div class="pyramid-pct" style="background:#f1c40f;color:var(--dark-gray);">30%</div><div class="pyramid-label" style="background:rgba(241,196,15,0.1);border-left:4px solid #f1c40f;"><strong>Demonstration</strong> — Instructor shows how</div></div>
+                    <div class="pyramid-bar"><div class="pyramid-pct" style="background:#2ecc71;">50%</div><div class="pyramid-label" style="background:rgba(46,204,113,0.1);border-left:4px solid #2ecc71;"><strong>Discussion</strong> — Active dialogue</div></div>
+                    <div class="pyramid-bar"><div class="pyramid-pct" style="background:#27ae60;">75%</div><div class="pyramid-label" style="background:rgba(39,174,96,0.1);border-left:4px solid #27ae60;"><strong>Practice by Doing</strong> — Hands-on experience</div></div>
+                    <div class="pyramid-bar"><div class="pyramid-pct" style="background:#1a8a4a;">90%</div><div class="pyramid-label" style="background:rgba(26,138,74,0.1);border-left:4px solid #1a8a4a;"><strong>Teach Others</strong> — Explaining to peers</div></div>
+                </div>
+                <p style="margin-top:25px;padding:18px;background:var(--light-gray);border-radius:8px;"><em>Key insight:</em> Spatial AI and XR technologies enable higher-retention approaches like practice, discussion, and peer teaching.</p>
+            </div>
+
+            <!-- SLIDE 11: Rethinking Bloom's — Tabs -->
+            <div class="slide slide-content">
+                <div class="module-progress"><span class="progress-step completed">Intro</span><span class="progress-step active">Engagement</span><span class="progress-step">Spatial AI</span><span class="progress-step">XR AI</span><span class="progress-step">Education</span><span class="progress-step">Assessment</span></div>
+                <h2>Rethinking Bloom's Taxonomy for the AI Age</h2>
+                <p style="margin-bottom:30px;">As AI becomes more capable at lower-order thinking, we must redesign education.</p>
+                <div class="tabs-container">
+                    <div class="tabs-header">
+                        <button class="tab-button active" onclick="switchTab(event,'tab1')">🤖 What AI Does Well</button>
+                        <button class="tab-button" onclick="switchTab(event,'tab2')">🧠 What Humans Do Well</button>
+                        <button class="tab-button" onclick="switchTab(event,'tab3')">⚖️ The New Balance</button>
+                    </div>
+                    <div class="tabs-content">
+                        <div id="tab1" class="tab-panel active"><h4>AI Excels at Lower-Order Thinking</h4><p><strong>Remember:</strong> Memorizing facts (ChatGPT does this instantly)</p><p><strong>Understand:</strong> Explaining concepts (AI provides accurate explanations)</p><p><strong>Apply:</strong> Solving routine problems (AI executes procedures)</p><p style="margin-top:18px;padding:15px;background:var(--light-gray);border-radius:6px;"><strong>The Problem:</strong> Traditional education focused on these AI-accessible skills.</p></div>
+                        <div id="tab2" class="tab-panel"><h4>Humans Excel at Higher-Order Thinking</h4><p><strong>Analyze:</strong> Finding relationships (requires human judgment)</p><p><strong>Evaluate:</strong> Making judgments based on values and evidence</p><p><strong>Create:</strong> Generating original ideas tied to personal experience</p><p style="margin-top:18px;padding:15px;background:rgba(242,169,0,0.1);border-radius:6px;"><strong>The Opportunity:</strong> Focus on creativity, critical thinking, and problem-solving.</p></div>
+                        <div id="tab3" class="tab-panel"><h4>The Balanced Approach</h4><p><strong>Let AI handle:</strong> Information delivery, fact checking, data analysis</p><p><strong>Focus humans on:</strong> Creative synthesis, meaning-making, ethical reasoning, collaborative problem-solving</p><p style="margin-top:18px;padding:15px;background:var(--light-gray);border-radius:6px;"><strong>Result:</strong> Students develop valuable skills while AI becomes a learning tool.</p></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 12: Teacher Role Shift — Accordion -->
+            <div class="slide slide-content">
+                <div class="module-progress"><span class="progress-step completed">Intro</span><span class="progress-step active">Engagement</span><span class="progress-step">Spatial AI</span><span class="progress-step">XR AI</span><span class="progress-step">Education</span><span class="progress-step">Assessment</span></div>
+                <h2>The Teacher's Role is Evolving</h2>
+                <p style="margin-bottom:30px;">From content delivery to learning experience design. <strong>Click to expand</strong> each transition:</p>
+                <div class="accordion-container">
+                    <div class="accordion-item"><div class="accordion-header" onclick="toggleAccordion(this)"><span>📚 From → To: Content Delivery</span><span class="accordion-icon">▼</span></div><div class="accordion-content"><p><strong>FROM:</strong> Lecturing and transmitting information</p><p><strong>TO:</strong> Curating and designing learning journeys with AI-powered personalization</p><p style="margin-top:12px;padding:12px;background:var(--light-gray);border-radius:6px;">Let AI handle information delivery. Focus on asking the right questions.</p></div></div>
+                    <div class="accordion-item"><div class="accordion-header" onclick="toggleAccordion(this)"><span>📝 From → To: Assessment</span><span class="accordion-icon">▼</span></div><div class="accordion-content"><p><strong>FROM:</strong> Testing memorization through quizzes and exams</p><p><strong>TO:</strong> Assessing creativity, problem-solving, and metacognitive reflection</p><p style="margin-top:12px;padding:12px;background:var(--light-gray);border-radius:6px;">AI can't grade genuine creativity. That's your irreplaceable value.</p></div></div>
+                    <div class="accordion-item"><div class="accordion-header" onclick="toggleAccordion(this)"><span>🔗 From → To: AI Integration</span><span class="accordion-icon">▼</span></div><div class="accordion-content"><p><strong>FROM:</strong> Avoiding AI to prevent integrity issues</p><p><strong>TO:</strong> Intentionally integrating Spatial AI and XR to enhance learning</p><p style="margin-top:12px;padding:12px;background:var(--light-gray);border-radius:6px;">Spatial AI and XR are tools for immersive, engaging experiences.</p></div></div>
+                </div>
+            </div>
+
+            <!-- SLIDE 13: Knowledge Check 1 -->
+            <div class="slide quiz-container">
+                <h2>Knowledge Check 1</h2>
+                <div class="quiz-question">Based on the Learning Pyramid, which method produces the highest knowledge retention?</div>
+                <div class="quiz-options">
+                    <label class="quiz-option"><span class="option-letter">A</span><input type="radio" name="kc1" value="a"><span>Reading textbooks and articles</span></label>
+                    <label class="quiz-option"><span class="option-letter">B</span><input type="radio" name="kc1" value="b"><span>Attending lectures and taking notes</span></label>
+                    <label class="quiz-option"><span class="option-letter">C</span><input type="radio" name="kc1" value="c"><span>Practicing by doing and teaching others</span></label>
+                    <label class="quiz-option"><span class="option-letter">D</span><input type="radio" name="kc1" value="d"><span>Watching videos and animations</span></label>
+                </div>
+                <div class="quiz-buttons"><button class="btn btn-primary" onclick="submitQuiz('kc1','c','Correct! Teaching others produces 90% retention — the most effective strategy.')">Submit Answer</button></div>
+                <div id="kc1Feedback" class="feedback-banner"><div class="feedback-content"></div></div>
+            </div>
+
+            <!-- SLIDE 14: Section Divider -->
+            <div class="slide slide-divider">
+                <h2>AI Beyond the Screen</h2>
+                <p style="font-size:1.3rem;margin-top:25px;opacity:0.95;">Spatial Computing & Immersive Worlds</p>
+            </div>
+
+            <!-- SLIDE 15: Video — Spatial Computing -->
+            <div class="slide slide-content">
+                <div class="module-progress"><span class="progress-step completed">Intro</span><span class="progress-step completed">Engagement</span><span class="progress-step active">Spatial AI</span><span class="progress-step">XR AI</span><span class="progress-step">Education</span><span class="progress-step">Assessment</span></div>
+                <h2>Introduction to Spatial Computing</h2>
+                <p style="margin-bottom:25px;">Watch this overview of how spatial computing is transforming technology:</p>
+                <div class="video-container">
+                    <div class="video-wrapper" id="video1-embed"><iframe src="https://www.youtube.com/embed/PabHddXod9I" title="Spatial Computing" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture;web-share" allowfullscreen></iframe></div>
+                    <a id="video1-fallback" href="https://www.youtube.com/watch?v=PabHddXod9I" target="_blank" class="video-fallback"><img src="https://img.youtube.com/vi/PabHddXod9I/hqdefault.jpg" alt="Video thumbnail" style="width:100%;display:block;"><div class="video-fallback-overlay"><div class="video-fallback-play"></div></div><p style="text-align:center;color:white;padding:10px;background:rgba(0,0,0,0.7);margin:0;font-size:0.9rem;">Click to watch on YouTube</p></a>
+                </div>
+            </div>
+
+            <!-- SLIDE 16: What is Spatial AI? — Click to Reveal + Image -->
+            <div class="slide slide-content">
+                <div class="module-progress"><span class="progress-step completed">Intro</span><span class="progress-step completed">Engagement</span><span class="progress-step active">Spatial AI</span><span class="progress-step">XR AI</span><span class="progress-step">Education</span><span class="progress-step">Assessment</span></div>
+                <h2>What is Spatial AI?</h2>
+                <div class="image-text-layout">
+                    <div>
+                        <p style="margin-bottom:25px;">The leap from understanding language to understanding the world. <strong>Click each area</strong>:</p>
+                        <div class="click-reveal-container" style="grid-template-columns:1fr;">
+                            <div class="click-reveal-item clickable" onclick="toggleReveal(this)"><div class="click-reveal-title">🌍 Understanding the Physical World</div><div class="click-hint">Click to reveal</div><div class="click-reveal-content">Spatial AI perceives the real world — recognizing objects, understanding surfaces, measuring depth, and tracking motion.</div></div>
+                            <div class="click-reveal-item clickable" onclick="toggleReveal(this)"><div class="click-reveal-title">🧠 From LLMs to LWMs</div><div class="click-hint">Click to reveal</div><div class="click-reveal-content">Large Language Models understand text. Large World Models understand space and physics — allowing AI to interact with physical environments.</div></div>
+                            <div class="click-reveal-item clickable" onclick="toggleReveal(this)"><div class="click-reveal-title">📡 How It Senses Space</div><div class="click-hint">Click to reveal</div><div class="click-reveal-content">Using cameras, LiDAR, depth sensors, and IMUs, Spatial AI builds real-time maps of environments.</div></div>
+                        </div>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&q=80" alt="AI Technology" class="slide-image">
+                </div>
+            </div>
+
+            <!-- SLIDE 17: Spatial AI Applications + Image -->
+            <div class="slide slide-content">
+                <div class="module-progress"><span class="progress-step completed">Intro</span><span class="progress-step completed">Engagement</span><span class="progress-step active">Spatial AI</span><span class="progress-step">XR AI</span><span class="progress-step">Education</span><span class="progress-step">Assessment</span></div>
+                <h2>Spatial AI: Crossing Multiple Fields</h2>
+                <div class="image-text-layout">
+                    <div style="display:grid;gap:15px;">
+                        <div style="padding:20px;background:linear-gradient(135deg,rgba(27,54,93,0.1),rgba(242,169,0,0.05));border-left:5px solid var(--primary);border-radius:8px;"><h4 style="color:var(--primary);margin-bottom:8px;">🥽 XR</h4><p style="margin:0;">AR glasses that understand your space to overlay virtual content.</p></div>
+                        <div style="padding:20px;background:linear-gradient(135deg,rgba(27,54,93,0.1),rgba(242,169,0,0.05));border-left:5px solid var(--primary);border-radius:8px;"><h4 style="color:var(--primary);margin-bottom:8px;">🤖 Robotics</h4><p style="margin:0;">Robots that navigate spaces and interact intelligently.</p></div>
+                        <div style="padding:20px;background:linear-gradient(135deg,rgba(27,54,93,0.1),rgba(242,169,0,0.05));border-left:5px solid var(--primary);border-radius:8px;"><h4 style="color:var(--primary);margin-bottom:8px;">🌐 GeoAI</h4><p style="margin:0;">Geospatial AI for maps, satellite imagery, and urban planning.</p></div>
+                        <div style="padding:20px;background:linear-gradient(135deg,rgba(27,54,93,0.1),rgba(242,169,0,0.05));border-left:5px solid var(--primary);border-radius:8px;"><h4 style="color:var(--primary);margin-bottom:8px;">🚗 Autonomous Systems</h4><p style="margin:0;">Tesla and other vehicles use Spatial AI for real-time perception.</p></div>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1593508512255-86ab42a8e620?w=600&q=80" alt="VR headset" class="slide-image">
+                </div>
+            </div>
+
+            <!-- SLIDE 18: What is XR AI? — Carousel -->
+            <div class="slide slide-content">
+                <div class="module-progress"><span class="progress-step completed">Intro</span><span class="progress-step completed">Engagement</span><span class="progress-step completed">Spatial AI</span><span class="progress-step active">XR AI</span><span class="progress-step">Education</span><span class="progress-step">Assessment</span></div>
+                <h2>What is XR AI?</h2>
+                <p style="margin-bottom:25px;">XR AI creates and powers immersive experiences. Navigate through key capabilities:</p>
+                <div class="carousel-container">
+                    <div class="carousel-slides">
+                        <div class="carousel-slide active" style="background:linear-gradient(135deg,rgba(27,54,93,0.05),rgba(242,169,0,0.05));"><h4>🌐 Immersive Worlds</h4><p>AI generates interactive 3D environments. Students could explore ancient Rome with AI-powered characters that respond intelligently. The environment adapts based on student choices.</p></div>
+                        <div class="carousel-slide" style="background:linear-gradient(135deg,rgba(46,204,113,0.05),rgba(39,174,96,0.05));"><h4>🤖 Intelligent NPCs & Adaptive Content</h4><p>AI-powered characters respond naturally to student interactions — serving as tutors, mentors, or partners. Content difficulty adjusts based on performance in real-time.</p></div>
+                        <div class="carousel-slide" style="background:linear-gradient(135deg,rgba(242,169,0,0.05),rgba(231,76,60,0.05));"><h4>🎯 Customized Learning</h4><p>Each student receives a personalized experience tailored to their pace, style, and goals. One student explores at beginner level while another tackles advanced challenges.</p></div>
+                    </div>
+                    <div class="carousel-controls">
+                        <button class="carousel-button" onclick="prevCarousel()">← Prev</button>
+                        <div class="carousel-dots"><span class="carousel-dot active" onclick="goToCarousel(0)"></span><span class="carousel-dot" onclick="goToCarousel(1)"></span><span class="carousel-dot" onclick="goToCarousel(2)"></span></div>
+                        <button class="carousel-button" onclick="nextCarousel()">Next →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 19: VR vs AR vs MR — Flip Cards -->
+            <div class="slide slide-content">
+                <div class="module-progress"><span class="progress-step completed">Intro</span><span class="progress-step completed">Engagement</span><span class="progress-step completed">Spatial AI</span><span class="progress-step active">XR AI</span><span class="progress-step">Education</span><span class="progress-step">Assessment</span></div>
+                <h2>VR vs AR vs MR: Understanding the Differences</h2>
+                <p style="margin-bottom:30px;">The XR spectrum includes several technologies. <strong>Click cards</strong> to see how they differ:</p>
+                <div class="flip-cards-container">
+                    <div class="flip-card" onclick="toggleFlip(this)"><div class="flip-card-inner"><div class="flip-card-front" style="background:linear-gradient(135deg,#2c3e50,#3498db);"><span class="flip-indicator">🔄</span><div style="font-size:2rem;margin-bottom:8px;">🥽</div><div style="font-size:1.3rem;">VR</div><div style="font-size:0.85rem;margin-top:6px;opacity:0.8;">Virtual Reality</div></div><div class="flip-card-back"><div class="flip-card-back-content"><strong>Entire environment generated by pixels</strong><br><br>Fully immersed in a computer-generated world.<br><br><em>Uses:</em> Training simulations, 3D design, virtual classrooms.</div></div></div></div>
+                    <div class="flip-card" onclick="toggleFlip(this)"><div class="flip-card-inner"><div class="flip-card-front" style="background:linear-gradient(135deg,#27ae60,#2ecc71);"><span class="flip-indicator">🔄</span><div style="font-size:2rem;margin-bottom:8px;">📱</div><div style="font-size:1.3rem;">AR</div><div style="font-size:0.85rem;margin-top:6px;opacity:0.8;">Augmented Reality</div></div><div class="flip-card-back"><div class="flip-card-back-content"><strong>3D objects floating in the real world</strong><br><br>Digital content overlays the physical environment.<br><br><em>Uses:</em> Anatomy visualization, navigation overlays.</div></div></div></div>
+                    <div class="flip-card" onclick="toggleFlip(this)"><div class="flip-card-inner"><div class="flip-card-front" style="background:linear-gradient(135deg,#8e44ad,#9b59b6);"><span class="flip-indicator">🔄</span><div style="font-size:2rem;margin-bottom:8px;">🔄</div><div style="font-size:1.3rem;">MR</div><div style="font-size:0.85rem;margin-top:6px;opacity:0.8;">Mixed Reality</div></div><div class="flip-card-back"><div class="flip-card-back-content"><strong>3D objects that understand the world</strong><br><br>Digital content interacts with real objects using depth sensors.<br><br><em>Uses:</em> HoloLens, smart AR glasses, spatial computing.</div></div></div></div>
+                </div>
+            </div>
+
+            <!-- SLIDE 20: Spatial AI vs XR AI — Tabs -->
+            <div class="slide slide-content">
+                <div class="module-progress"><span class="progress-step completed">Intro</span><span class="progress-step completed">Engagement</span><span class="progress-step completed">Spatial AI</span><span class="progress-step active">XR AI</span><span class="progress-step">Education</span><span class="progress-step">Assessment</span></div>
+                <h2>Spatial AI vs XR AI: Key Differences</h2>
+                <p style="margin-bottom:25px;">Both are important, but they solve different problems:</p>
+                <div class="tabs-container">
+                    <div class="tabs-header">
+                        <button class="tab-button active" onclick="switchTab(event,'spatial-ai')">🌍 Spatial AI</button>
+                        <button class="tab-button" onclick="switchTab(event,'xr-ai')">🥽 XR AI</button>
+                        <button class="tab-button" onclick="switchTab(event,'differences')">📊 Key Differences</button>
+                    </div>
+                    <div class="tabs-content">
+                        <div id="spatial-ai" class="tab-panel active"><h4>Understanding the Physical World</h4><p><strong>What it does:</strong> Perceives, interprets, and models the physical world in real-time.</p><ul style="margin-top:12px;"><li>Recognizes objects and surfaces</li><li>Measures depth and distance</li><li>Tracks motion and movement</li><li>Enables navigation and spatial awareness</li></ul><p style="margin-top:15px;"><strong>Powers:</strong> Robotics, autonomous vehicles, smart glasses</p></div>
+                        <div id="xr-ai" class="tab-panel"><h4>Powering Immersive Experiences</h4><p><strong>What it does:</strong> Creates, manages, and personalizes immersive environments.</p><ul style="margin-top:12px;"><li>Generates 3D content and worlds</li><li>Controls intelligent NPCs and avatars</li><li>Adapts content to user performance</li><li>Personalizes learning experiences</li></ul><p style="margin-top:15px;"><strong>Powers:</strong> VR training, AR games, intelligent tutoring</p></div>
+                        <div id="differences" class="tab-panel"><h4>Quick Comparison</h4><table style="width:100%;border-collapse:collapse;margin-top:15px;"><tr style="background:var(--light-gray);"><th style="padding:10px;text-align:left;border-bottom:2px solid var(--border);">Aspect</th><th style="padding:10px;text-align:left;border-bottom:2px solid var(--border);">Spatial AI</th><th style="padding:10px;text-align:left;border-bottom:2px solid var(--border);">XR AI</th></tr><tr style="border-bottom:1px solid var(--border);"><td style="padding:10px;"><strong>Focus</strong></td><td style="padding:10px;">Understanding reality</td><td style="padding:10px;">Creating experiences</td></tr><tr style="border-bottom:1px solid var(--border);background:var(--light-gray);"><td style="padding:10px;"><strong>Input</strong></td><td style="padding:10px;">Sensors (cameras, LiDAR)</td><td style="padding:10px;">User inputs & performance</td></tr><tr style="border-bottom:1px solid var(--border);"><td style="padding:10px;"><strong>Output</strong></td><td style="padding:10px;">Environmental understanding</td><td style="padding:10px;">Immersive content</td></tr><tr style="background:var(--light-gray);"><td style="padding:10px;"><strong>In Education</strong></td><td style="padding:10px;">Smart labs, accessibility</td><td style="padding:10px;">Virtual simulations, tutoring</td></tr></table></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 21: Knowledge Check 2 -->
+            <div class="slide quiz-container">
+                <h2>Knowledge Check 2</h2>
+                <div class="quiz-question">What is the primary difference between Spatial AI and XR AI?</div>
+                <div class="quiz-options">
+                    <label class="quiz-option"><span class="option-letter">A</span><input type="radio" name="kc2" value="a"><span>Spatial AI understands the physical world; XR AI creates immersive experiences</span></label>
+                    <label class="quiz-option"><span class="option-letter">B</span><input type="radio" name="kc2" value="b"><span>They are the same technology with different names</span></label>
+                    <label class="quiz-option"><span class="option-letter">C</span><input type="radio" name="kc2" value="c"><span>Spatial AI is for VR; XR AI is for AR</span></label>
+                    <label class="quiz-option"><span class="option-letter">D</span><input type="radio" name="kc2" value="d"><span>XR AI is older technology; Spatial AI is newer</span></label>
+                </div>
+                <div class="quiz-buttons"><button class="btn btn-primary" onclick="submitQuiz('kc2','a','Exactly right! Spatial AI perceives the physical world. XR AI creates immersive virtual/mixed experiences. Both are complementary.')">Submit Answer</button></div>
+                <div id="kc2Feedback" class="feedback-banner"><div class="feedback-content"></div></div>
+            </div>
+
+            <!-- SLIDE 22: Section Divider -->
+            <div class="slide slide-divider">
+                <h2>XR & Spatial AI in Education</h2>
+                <p style="font-size:1.3rem;margin-top:25px;opacity:0.95;">From Theory to Classroom Practice</p>
+            </div>
+
+            <!-- SLIDE 23: Video — XR in Education -->
+            <div class="slide slide-content">
+                <div class="module-progress"><span class="progress-step completed">Intro</span><span class="progress-step completed">Engagement</span><span class="progress-step completed">Spatial AI</span><span class="progress-step completed">XR AI</span><span class="progress-step active">Education</span><span class="progress-step">Assessment</span></div>
+                <h2>The Future of Learning: XR in Education</h2>
+                <p style="margin-bottom:25px;">See real examples of immersive technologies transforming education:</p>
+                <div class="video-container">
+                    <div class="video-wrapper" id="video2-embed"><iframe src="https://www.youtube.com/embed/DRtGCpGv1gg" title="XR in Education" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture;web-share" allowfullscreen></iframe></div>
+                    <a id="video2-fallback" href="https://www.youtube.com/watch?v=DRtGCpGv1gg" target="_blank" class="video-fallback"><img src="https://img.youtube.com/vi/DRtGCpGv1gg/hqdefault.jpg" alt="Video thumbnail" style="width:100%;display:block;"><div class="video-fallback-overlay"><div class="video-fallback-play"></div></div><p style="text-align:center;color:white;padding:10px;background:rgba(0,0,0,0.7);margin:0;font-size:0.9rem;">Click to watch on YouTube</p></a>
+                </div>
+                <p style="margin-top:25px;padding:15px;background:var(--light-gray);border-radius:8px;font-size:0.95rem;"><strong>Reflection:</strong> How could you adapt these approaches for your own discipline?</p>
+            </div>
+
+            <!-- SLIDE 24: Personalized Learning — Accordion + Image -->
+            <div class="slide slide-content">
+                <div class="module-progress"><span class="progress-step completed">Intro</span><span class="progress-step completed">Engagement</span><span class="progress-step completed">Spatial AI</span><span class="progress-step completed">XR AI</span><span class="progress-step active">Education</span><span class="progress-step">Assessment</span></div>
+                <h2>Personalized Learning Through Spatial & XR AI</h2>
+                <div class="image-text-layout">
+                    <div>
+                        <p style="margin-bottom:20px;">These technologies enable adaptive, personalized learning. <strong>Expand each section:</strong></p>
+                        <div class="accordion-container">
+                            <div class="accordion-item"><div class="accordion-header" onclick="toggleAccordion(this)"><span>🎯 Intelligent Tutoring</span><span class="accordion-icon">▼</span></div><div class="accordion-content"><p>AI tutors explain concepts multiple ways, answer questions 24/7, and adjust difficulty based on understanding.</p></div></div>
+                            <div class="accordion-item"><div class="accordion-header" onclick="toggleAccordion(this)"><span>🌍 Dynamic Environments</span><span class="accordion-icon">▼</span></div><div class="accordion-content"><p>Learning spaces understand the student's surroundings. Students explore virtual cells or navigate historical sites at their own pace.</p></div></div>
+                            <div class="accordion-item"><div class="accordion-header" onclick="toggleAccordion(this)"><span>👥 Collaborative XR</span><span class="accordion-icon">▼</span></div><div class="accordion-content"><p>Students in different locations learn together in shared immersive spaces with personalized experiences.</p></div></div>
+                            <div class="accordion-item"><div class="accordion-header" onclick="toggleAccordion(this)"><span>📊 Adaptive Assessment</span><span class="accordion-icon">▼</span></div><div class="accordion-content"><p>XR AI continuously assesses understanding through interactions, detecting struggles and adjusting in real-time.</p></div></div>
+                        </div>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&q=80" alt="Digital learning" class="slide-image">
+                </div>
+            </div>
+
+            <!-- SLIDE 25: Final Assessment Q1 -->
+            <div class="slide quiz-container">
+                <h2>Final Assessment — Question 1 of 4</h2>
+                <div class="quiz-question">Which is an example of Spatial AI in education?</div>
+                <div class="quiz-options">
+                    <label class="quiz-option"><span class="option-letter">A</span><input type="radio" name="fa1" value="a"><span>A smart classroom that understands the physical layout for real-time accessibility assistance</span></label>
+                    <label class="quiz-option"><span class="option-letter">B</span><input type="radio" name="fa1" value="b"><span>An AI-generated essay writing tutor</span></label>
+                    <label class="quiz-option"><span class="option-letter">C</span><input type="radio" name="fa1" value="c"><span>A VR game about history</span></label>
+                    <label class="quiz-option"><span class="option-letter">D</span><input type="radio" name="fa1" value="d"><span>A chatbot that answers student questions</span></label>
+                </div>
+                <div class="quiz-buttons"><button class="btn btn-primary" onclick="submitQuiz('fa1','a','Correct! This is Spatial AI — it perceives the physical classroom and uses that understanding for accessibility. The others are AI-powered but not spatial.')">Submit Answer</button></div>
+                <div id="fa1Feedback" class="feedback-banner"><div class="feedback-content"></div></div>
+            </div>
+
+            <!-- SLIDE 26: Final Assessment Q2 -->
+            <div class="slide quiz-container">
+                <h2>Final Assessment — Question 2 of 4</h2>
+                <div class="quiz-question">According to the Learning Pyramid, how much does a student retain when they teach others?</div>
+                <div class="quiz-options">
+                    <label class="quiz-option"><span class="option-letter">A</span><input type="radio" name="fa2" value="a"><span>30%</span></label>
+                    <label class="quiz-option"><span class="option-letter">B</span><input type="radio" name="fa2" value="b"><span>50%</span></label>
+                    <label class="quiz-option"><span class="option-letter">C</span><input type="radio" name="fa2" value="c"><span>75%</span></label>
+                    <label class="quiz-option"><span class="option-letter">D</span><input type="radio" name="fa2" value="d"><span>90%</span></label>
+                </div>
+                <div class="quiz-buttons"><button class="btn btn-primary" onclick="submitQuiz('fa2','d','Exactly! Teaching others produces 90% retention — the highest rate. XR can facilitate peer learning at scale.')">Submit Answer</button></div>
+                <div id="fa2Feedback" class="feedback-banner"><div class="feedback-content"></div></div>
+            </div>
+
+            <!-- SLIDE 27: Final Assessment Q3 -->
+            <div class="slide quiz-container">
+                <h2>Final Assessment — Question 3 of 4</h2>
+                <div class="quiz-question">In the AI age, which is the BEST focus for education?</div>
+                <div class="quiz-options">
+                    <label class="quiz-option"><span class="option-letter">A</span><input type="radio" name="fa3" value="a"><span>Memorization and fact recall</span></label>
+                    <label class="quiz-option"><span class="option-letter">B</span><input type="radio" name="fa3" value="b"><span>Higher-order thinking: creativity, critical analysis, problem-solving, ethical reasoning</span></label>
+                    <label class="quiz-option"><span class="option-letter">C</span><input type="radio" name="fa3" value="c"><span>Learning to use AI tools like ChatGPT</span></label>
+                    <label class="quiz-option"><span class="option-letter">D</span><input type="radio" name="fa3" value="d"><span>Traditional skills that AI cannot replicate</span></label>
+                </div>
+                <div class="quiz-buttons"><button class="btn btn-primary" onclick="submitQuiz('fa3','b','Correct! Since AI excels at lower-order thinking, education should focus on creativity, critical thinking, and problem-solving.')">Submit Answer</button></div>
+                <div id="fa3Feedback" class="feedback-banner"><div class="feedback-content"></div></div>
+            </div>
+
+            <!-- SLIDE 28: Final Assessment Q4 -->
+            <div class="slide quiz-container">
+                <h2>Final Assessment — Question 4 of 4</h2>
+                <div class="quiz-question">Which teaching approach aligns BEST with Spatial AI and XR AI principles?</div>
+                <div class="quiz-options">
+                    <label class="quiz-option"><span class="option-letter">A</span><input type="radio" name="fa4" value="a"><span>Increase lecture time with AI-generated slides</span></label>
+                    <label class="quiz-option"><span class="option-letter">B</span><input type="radio" name="fa4" value="b"><span>Design immersive, personalized learning journeys where students actively practice and solve real problems</span></label>
+                    <label class="quiz-option"><span class="option-letter">C</span><input type="radio" name="fa4" value="c"><span>Replace all human instruction with AI tutors</span></label>
+                    <label class="quiz-option"><span class="option-letter">D</span><input type="radio" name="fa4" value="d"><span>Add XR without changing pedagogy</span></label>
+                </div>
+                <div class="quiz-buttons"><button class="btn btn-primary" onclick="submitQuiz('fa4','b','Exactly right! The most effective integration shifts teachers from content deliverers to learning experience designers.')">Submit Answer</button></div>
+                <div id="fa4Feedback" class="feedback-banner"><div class="feedback-content"></div></div>
+            </div>
+
+            <!-- SLIDE 29: Assessment Results -->
+            <div class="slide slide-content">
+                <div class="results-container">
+                    <div class="score-circle"><div class="score-number" id="finalScore">0</div><div class="score-label">out of 4</div></div>
+                    <div class="results-text">
+                        <h3>Assessment Complete!</h3>
+                        <p id="performanceMessage">Complete the final assessment to see your results.</p>
+                        <p style="margin-top:25px;font-weight:600;">Next Steps:</p>
+                        <ul style="text-align:left;display:inline-block;">
+                            <li>Reflect on how these technologies could transform your teaching</li>
+                            <li>Consider one small way to experiment with these concepts</li>
+                            <li>Connect with colleagues to explore possibilities</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 30: Discussion Activity -->
+            <div class="slide slide-content">
+                <h2>Reflection & Discussion</h2>
+                <p style="margin-bottom:30px;">Take a few minutes to reflect on these questions:</p>
+                <div style="display:grid;gap:22px;">
+                    <div style="padding:28px;background:linear-gradient(135deg,rgba(242,169,0,0.05),rgba(242,169,0,0.1));border-left:5px solid var(--accent);border-radius:8px;">
+                        <h4 style="color:var(--primary);margin-bottom:12px;">Question 1: Vision & Potential</h4>
+                        <p style="font-style:italic;">What potential do you envision for Spatial AI and XR AI in your specific discipline?</p>
+                        <p style="margin-top:12px;font-size:0.9rem;color:var(--dark-gray);">Consider: What problems do students face? How could immersive learning address real needs?</p>
+                    </div>
+                    <div style="padding:28px;background:linear-gradient(135deg,rgba(242,169,0,0.05),rgba(242,169,0,0.1));border-left:5px solid var(--accent);border-radius:8px;">
+                        <h4 style="color:var(--primary);margin-bottom:12px;">Question 2: Benefits & Challenges</h4>
+                        <p style="font-style:italic;">What are the most significant benefits and challenges of using Spatial AI and XR in California Community College classrooms?</p>
+                        <p style="margin-top:12px;font-size:0.9rem;color:var(--dark-gray);">Consider: Access, equity, cost, student comfort, institutional support.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 31: Key Takeaways -->
+            <div class="slide slide-content">
+                <h2>Key Takeaways</h2>
+                <div style="display:grid;gap:15px;">
+                    <div style="display:flex;gap:18px;align-items:flex-start;"><div style="font-size:2rem;font-weight:700;color:var(--accent);min-width:45px;">1</div><div><h4 style="color:var(--primary);margin-bottom:6px;">Spatial AI understands the physical world</h4><p>It senses space, objects, surfaces, and motion — enabling context-aware education.</p></div></div>
+                    <div style="display:flex;gap:18px;align-items:flex-start;"><div style="font-size:2rem;font-weight:700;color:var(--accent);min-width:45px;">2</div><div><h4 style="color:var(--primary);margin-bottom:6px;">XR AI powers immersive experiences</h4><p>It creates intelligent, adaptive worlds ideal for high-retention, student-centered learning.</p></div></div>
+                    <div style="display:flex;gap:18px;align-items:flex-start;"><div style="font-size:2rem;font-weight:700;color:var(--accent);min-width:45px;">3</div><div><h4 style="color:var(--primary);margin-bottom:6px;">Education must evolve</h4><p>Teachers shift to designing learning journeys emphasizing creativity and problem-solving.</p></div></div>
+                    <div style="display:flex;gap:18px;align-items:flex-start;"><div style="font-size:2rem;font-weight:700;color:var(--accent);min-width:45px;">4</div><div><h4 style="color:var(--primary);margin-bottom:6px;">You are essential</h4><p>Technology enables better learning, but teachers are irreplaceable learning architects.</p></div></div>
+                </div>
+                <div style="margin-top:40px;padding:22px;background:linear-gradient(135deg,var(--primary),var(--primary-light));border-radius:8px;color:var(--white);text-align:center;">
+                    <h3 style="margin-bottom:12px;color:var(--white);">Ready to Explore Further?</h3>
+                    <p style="color:var(--white);">Identify one opportunity where Spatial AI or XR could enhance learning in your discipline.</p>
+                </div>
+            </div>
+
+            <!-- SLIDE 32: About Author -->
+            <div class="slide slide-content">
+                <h2>About the Author & Resources</h2>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:25px;margin-bottom:30px;">
+                    <div style="padding:25px;background:var(--light-gray);border-radius:10px;border-left:5px solid var(--primary);"><h4 style="color:var(--primary);margin-bottom:12px;">Dominique Wu</h4><p><strong>Role:</strong> Adjunct Instructor, Cañada College</p><p><strong>Title:</strong> CCCCO AI Fellow</p><div style="margin-top:15px;padding-top:15px;border-top:2px solid var(--border);"><p style="margin:6px 0;"><strong>Email:</strong> wudominique@smccd.edu</p><p style="margin:6px 0;"><strong>Email:</strong> dwu@cccco.edu</p></div></div>
+                    <div style="padding:25px;background:var(--light-gray);border-radius:10px;border-left:5px solid var(--accent);"><h4 style="color:var(--primary);margin-bottom:12px;">Further Learning</h4><ul><li>Spatial AI and Large World Models</li><li>XR in Education research</li><li>Bloom's Taxonomy in the AI age</li><li>Community college innovation</li></ul></div>
+                </div>
+                <div style="padding:22px;background:linear-gradient(135deg,rgba(27,54,93,0.05),rgba(242,169,0,0.05));border-radius:8px;border-left:5px solid var(--primary);"><h4 style="color:var(--primary);margin-bottom:12px;">Thank You</h4><p>Thank you for completing this module. The future of education is shaped by educators willing to explore new possibilities.</p></div>
+            </div>
+
+        </div>
+
+        <!-- PLAYBAR -->
+        <div class="playbar" role="toolbar" aria-label="Playbar">
+            <div class="playbar-left"><button class="playbar-button" id="prevBtn" onclick="previousSlide()" title="Previous" aria-label="Previous slide">&#10094;</button></div>
+            <div class="playbar-center">
+                <button class="playbar-button" id="playBtn" onclick="togglePlayPause()" title="Play/Pause" aria-label="Play or pause">▶</button>
+                <div class="progress-bar" onclick="seekSlide(event)" role="slider" aria-label="Progress"><div class="progress-fill"></div></div>
+            </div>
+            <div class="playbar-right">
+                <span class="slide-counter"><span id="slideNum">1</span> / <span id="slideTotal">32</span></span>
+                <button class="playbar-button" onclick="toggleCaptions()" title="Captions" aria-label="Closed captions">CC</button>
+                <button class="playbar-button" id="tocBtn" onclick="toggleTOC()" title="Table of Contents" aria-label="Table of Contents" aria-pressed="false">☰</button>
+                <button class="playbar-button" id="nextBtn" onclick="nextSlide()" title="Next" aria-label="Next slide">&#10095;</button>
+            </div>
+        </div>
+
+        <!-- TOC -->
+        <div class="toc-overlay" id="tocOverlay" onclick="closeTOC(event)"></div>
+        <div class="toc-sidebar" id="tocSidebar">
+            <div class="toc-header"><h3>Contents</h3><button class="toc-close" onclick="closeTOC()" aria-label="Close">✕</button></div>
+            <div class="toc-list" id="tocList"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = [
+            { title: "Title: How Spatial & XR AI Are Changing the Future of Teaching", type: "title" },
+            { title: "Pre-Assessment Introduction", type: "content" },
+            { title: "Pre-Assessment Q1: What is Spatial AI?", type: "quiz" },
+            { title: "Pre-Assessment Q2: What does XR stand for?", type: "quiz" },
+            { title: "Pre-Assessment Q3: Immersive Technology Experience", type: "quiz" },
+            { title: "Pre-Assessment Results", type: "content" },
+            { title: "Learning Objectives", type: "content" },
+            { title: "The Problem: Student Disengagement", type: "interactive" },
+            { title: "The Solution: Engaging Learning", type: "interactive" },
+            { title: "Learning Pyramid: Retention Rates", type: "content" },
+            { title: "Rethinking Bloom's Taxonomy", type: "interactive" },
+            { title: "The Teacher's Role is Evolving", type: "interactive" },
+            { title: "Knowledge Check 1", type: "quiz" },
+            { title: "Section: AI Beyond the Screen", type: "divider" },
+            { title: "Video: Introduction to Spatial Computing", type: "video" },
+            { title: "What is Spatial AI?", type: "interactive" },
+            { title: "Spatial AI Applications", type: "content" },
+            { title: "What is XR AI?", type: "interactive" },
+            { title: "VR vs AR vs MR", type: "interactive" },
+            { title: "Spatial AI vs XR AI Comparison", type: "interactive" },
+            { title: "Knowledge Check 2", type: "quiz" },
+            { title: "Section: XR & Spatial AI in Education", type: "divider" },
+            { title: "Video: The Future of Learning", type: "video" },
+            { title: "Personalized Learning Experiences", type: "interactive" },
+            { title: "Final Assessment Q1", type: "quiz" },
+            { title: "Final Assessment Q2", type: "quiz" },
+            { title: "Final Assessment Q3", type: "quiz" },
+            { title: "Final Assessment Q4", type: "quiz" },
+            { title: "Assessment Results", type: "content" },
+            { title: "Reflection & Discussion", type: "content" },
+            { title: "Key Takeaways", type: "content" },
+            { title: "About the Author & Resources", type: "content" }
+        ];
+
+        let preAssessmentScore = 0, finalAssessmentScore = 0, carouselIndex = 0;
+
+        function initModule() { renderTOC(); updatePlaybar(); showSlide(0); }
+
+        function showSlide(n) {
+            const allSlides = document.getElementById('contentArea').querySelectorAll('.slide');
+            if (n >= allSlides.length) n = allSlides.length - 1;
+            if (n < 0) n = 0;
+            currentSlide = n;
+            allSlides.forEach(s => s.classList.remove('active'));
+            allSlides[currentSlide].classList.add('active');
+            allSlides[currentSlide].scrollTop = 0;
+            updatePlaybar(); updateTOC();
+        }
+
+        function nextSlide() { showSlide(currentSlide + 1); }
+        function previousSlide() { showSlide(currentSlide - 1); }
+
+        function updatePlaybar() {
+            const num = currentSlide + 1;
+            document.getElementById('slideNum').textContent = num;
+            document.getElementById('slideTotal').textContent = slides.length;
+            document.querySelector('.progress-fill').style.width = (num / slides.length * 100) + '%';
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === slides.length - 1;
+        }
+
+        function seekSlide(e) {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const pct = (e.clientX - rect.left) / rect.width;
+            showSlide(Math.floor(pct * slides.length));
+        }
+
+        function renderTOC() {
+            const list = document.getElementById('tocList');
+            list.innerHTML = '';
+            slides.forEach((s, i) => {
+                const item = document.createElement('div');
+                item.className = 'toc-item' + (i === currentSlide ? ' active' : '');
+                item.textContent = s.title;
+                item.onclick = () => { showSlide(i); closeTOC(); };
+                list.appendChild(item);
+            });
+        }
+
+        function updateTOC() {
+            document.querySelectorAll('.toc-item').forEach((item, i) => item.classList.toggle('active', i === currentSlide));
+        }
+
+        function toggleTOC() {
+            const o = document.getElementById('tocOverlay'), s = document.getElementById('tocSidebar');
+            const open = s.classList.contains('active');
+            o.classList.toggle('active', !open); s.classList.toggle('active', !open);
+            document.getElementById('tocBtn').setAttribute('aria-pressed', !open);
+        }
+
+        function closeTOC(e) {
+            if (!e || !e.target.closest('.toc-sidebar')) {
+                document.getElementById('tocOverlay').classList.remove('active');
+                document.getElementById('tocSidebar').classList.remove('active');
+                document.getElementById('tocBtn').setAttribute('aria-pressed', 'false');
+            }
+        }
+
+        function togglePlayPause() {}
+        function toggleCaptions() { alert('Closed captions are not available for this module.'); }
+
+        function toggleFlip(card) { card.classList.toggle('flipped'); }
+
+        function toggleReveal(item) {
+            const c = item.querySelector('.click-reveal-content'), h = item.querySelector('.click-hint');
+            c.classList.toggle('revealed');
+            h.style.display = c.classList.contains('revealed') ? 'none' : 'block';
+        }
+
+        function switchTab(e, tabId) {
+            const container = e.target.closest('.tabs-container');
+            container.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+            container.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            e.target.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        function toggleAccordion(header) {
+            const item = header.closest('.accordion-item'), container = item.closest('.accordion-container');
+            const content = item.querySelector('.accordion-content'), isOpen = header.classList.contains('active');
+            container.querySelectorAll('.accordion-item').forEach(i => { i.querySelector('.accordion-header').classList.remove('active'); i.querySelector('.accordion-content').classList.remove('active'); });
+            if (!isOpen) { header.classList.add('active'); content.classList.add('active'); }
+        }
+
+        function nextCarousel() {
+            const s = document.querySelectorAll('.carousel-slide');
+            carouselIndex = (carouselIndex + 1) % s.length;
+            updateCarousel(s);
+        }
+        function prevCarousel() {
+            const s = document.querySelectorAll('.carousel-slide');
+            carouselIndex = (carouselIndex - 1 + s.length) % s.length;
+            updateCarousel(s);
+        }
+        function goToCarousel(i) {
+            carouselIndex = i;
+            updateCarousel(document.querySelectorAll('.carousel-slide'));
+        }
+        function updateCarousel(s) {
+            s.forEach((sl, i) => sl.classList.toggle('active', i === carouselIndex));
+            document.querySelectorAll('.carousel-dot').forEach((d, i) => d.classList.toggle('active', i === carouselIndex));
+        }
+
+        function showConfetti() {
+            const colors = ['#F2A900','#1B365D','#4CAF50','#2196F3','#FF9800','#E91E63'];
+            for (let i = 0; i < 30; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                piece.style.left = Math.random() * 100 + 'vw';
+                piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                piece.style.animationDelay = (Math.random() * 0.5) + 's';
+                piece.style.animationDuration = (2 + Math.random() * 2) + 's';
+                piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                piece.style.width = (6 + Math.random() * 8) + 'px';
+                piece.style.height = (6 + Math.random() * 8) + 'px';
+                document.body.appendChild(piece);
+                setTimeout(() => piece.remove(), 4000);
+            }
+        }
+
+        function submitQuiz(questionName, correctAnswer, feedbackText) {
+            const selected = document.querySelector('input[name="' + questionName + '"]:checked');
+            if (!selected) { alert('Please select an answer.'); return; }
+            const feedbackDiv = document.getElementById(questionName + 'Feedback');
+            const isCorrect = selected.value === correctAnswer || correctAnswer === 'any';
+            feedbackDiv.classList.add('show');
+            feedbackDiv.classList.remove('feedback-correct', 'feedback-incorrect');
+            feedbackDiv.classList.add(isCorrect ? 'feedback-correct' : 'feedback-incorrect');
+            feedbackDiv.querySelector('.feedback-content').textContent = (isCorrect || correctAnswer === 'any') ? feedbackText : 'Not quite. ' + feedbackText;
+            if (isCorrect) {
+                if (questionName.startsWith('q')) preAssessmentScore++;
+                if (questionName.startsWith('fa')) finalAssessmentScore++;
+                showConfetti();
+            } else {
+                feedbackDiv.style.animation = 'shake 0.5s ease';
+                setTimeout(() => feedbackDiv.style.animation = '', 500);
+            }
+            document.getElementById('preAssessmentScore').textContent = preAssessmentScore;
+            // Update personalized pre-assessment message
+            var preMsg = document.getElementById('preAssessmentMessage');
+            if (preMsg) {
+                if (preAssessmentScore === 3) {
+                    preMsg.textContent = 'Excellent! You already have a strong foundation in Spatial AI and XR. This module will deepen your expertise and help you apply these concepts in your classroom.';
+                } else if (preAssessmentScore === 2) {
+                    preMsg.textContent = 'Great start! You have some familiarity with these concepts. Pay close attention to the sections on Spatial AI vs XR AI differences to strengthen your understanding.';
+                } else if (preAssessmentScore === 1) {
+                    preMsg.textContent = 'You\'re beginning to explore these concepts. The module will build your knowledge step by step — focus especially on the foundational slides and interactive activities.';
+                } else {
+                    preMsg.textContent = 'These are new concepts for you — and that\'s perfectly fine! This module is designed to take you from the basics to practical application. Every section builds on the last.';
+                }
+            }
+            document.getElementById('finalScore').textContent = finalAssessmentScore;
+            var msg = document.getElementById('performanceMessage');
+            if (finalAssessmentScore === 4) msg.textContent = 'Excellent work! You have a strong understanding of Spatial AI, XR, and their potential in education.';
+            else if (finalAssessmentScore >= 2) msg.textContent = 'Good effort! Consider revisiting sections where you missed questions.';
+            document.querySelectorAll('input[name="' + questionName + '"]').forEach(function(inp) { inp.disabled = true; });
+            feedbackDiv.parentElement.querySelectorAll('.quiz-option').forEach(function(opt) {
+                var radio = opt.querySelector('input');
+                if (radio.value === correctAnswer && correctAnswer !== 'any') { opt.style.borderColor = 'var(--success)'; opt.style.backgroundColor = 'rgba(76,175,80,0.1)'; }
+                else if (radio.checked && !isCorrect) { opt.style.borderColor = 'var(--error)'; opt.style.backgroundColor = 'rgba(244,67,54,0.1)'; }
+            });
+            var btn = feedbackDiv.parentElement.querySelector('.btn-primary');
+            if (btn) { btn.textContent = 'Continue \u2192'; btn.onclick = nextSlide; }
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') previousSlide();
+        });
+
+        // Video fallback for local file viewing
+        function checkVideoEmbeds() {
+            if (window.location.protocol === 'file:') {
+                ['1','2'].forEach(function(n) {
+                    var embed = document.getElementById('video' + n + '-embed');
+                    var fallback = document.getElementById('video' + n + '-fallback');
+                    if (embed) embed.style.display = 'none';
+                    if (fallback) fallback.style.display = 'block';
+                });
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', function() { initModule(); checkVideoEmbeds(); });
+    </script>
+</body>
+</html>
