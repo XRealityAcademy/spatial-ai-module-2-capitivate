@@ -32,7 +32,7 @@
         .slide-title .meta em { font-style: normal; font-size: 0.95rem; }
         .author-badge { display: inline-block; background: var(--accent); color: var(--primary); padding: 6px 18px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; margin-top: 10px; letter-spacing: 0.5px; z-index: 2; position: relative; }
 
-        .slide-content { background: var(--white); padding: 60px 80px !important; }
+        .slide-content { background: var(--white); padding: 60px 80px !important; overflow-y: auto; }
         .slide-divider {
             background: linear-gradient(135deg, var(--primary), var(--primary-light), var(--accent)); background-size: 400% 400%;
             animation: gradientShift 8s ease infinite; color: var(--white); justify-content: center; align-items: center; text-align: center; padding: 0 !important; position: relative;
@@ -137,11 +137,11 @@
         .accordion-content p { font-size: 1rem; line-height: 1.7; margin-bottom: 10px; }
 
         /* Carousel */
-        .carousel-container { margin: 25px 0; background: var(--light-gray); border-radius: 10px; overflow: hidden; }
-        .carousel-slides { position: relative; height: 350px; overflow: hidden; }
-        .carousel-slide { display: none; position: absolute; width: 100%; height: 100%; padding: 35px; }
+        .carousel-container { margin: 25px 0; background: var(--light-gray); border-radius: 10px; overflow: visible; }
+        .carousel-slides { position: relative; min-height: 220px; overflow: visible; }
+        .carousel-slide { display: none; width: 100%; padding: 35px; }
         .carousel-slide.active { display: flex; flex-direction: column; justify-content: center; animation: fadeInUp 0.3s ease; }
-        .carousel-slide h4 { color: var(--primary); font-size: 1.4rem; margin-bottom: 18px; font-weight: 600; }
+        .carousel-slide h3 { color: var(--primary); font-size: 1.4rem; margin-bottom: 18px; font-weight: 600; }
         .carousel-slide p { font-size: 1rem; line-height: 1.7; }
         .carousel-controls { display: flex; justify-content: space-between; align-items: center; padding: 18px 35px; background: var(--white); border-top: 1px solid var(--border); }
         .carousel-button { background: var(--primary); color: var(--white); border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
@@ -161,8 +161,8 @@
         .click-hint { font-size: 0.8rem; color: var(--accent); font-weight: 600; margin-top: 8px; }
 
         /* Video */
-        .video-container { position: relative; width: 100%; max-width: 780px; margin: 30px auto; background: var(--dark-gray); border-radius: 10px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
-        .video-wrapper { position: relative; width: 100%; padding-bottom: 56.25%; height: 0; }
+        .video-container { position: relative; width: 100%; max-width: 780px; margin: 30px auto; background: var(--dark-gray); border-radius: 10px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.2); flex-shrink: 0; }
+        .video-wrapper { position: relative; width: 100%; padding-bottom: 56.25%; height: 0; flex-shrink: 0; }
         .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
         .video-fallback { display: none; position: relative; cursor: pointer; text-decoration: none; }
         .video-fallback img { width: 100%; display: block; }
