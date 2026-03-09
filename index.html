@@ -233,6 +233,7 @@
     </style>
 </head>
 <body>
+    <a href="#contentArea" class="sr-only" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;z-index:9999;" onfocus="this.style.position='static';this.style.width='auto';this.style.height='auto';" onblur="this.style.position='absolute';this.style.left='-9999px';this.style.width='1px';this.style.height='1px';">Skip to main content</a>
     <div class="container">
         <div class="content-area" id="contentArea">
 
@@ -280,7 +281,7 @@
                     <label class="quiz-option"><span class="option-letter">D</span><input type="radio" name="q1" value="d"><span>Software that generates images from text descriptions</span></label>
                 </div>
                 <div class="quiz-buttons"><button class="btn btn-primary" onclick="submitQuiz('q1','a','Correct! Spatial AI understands the physical world — objects, surfaces, depth, motion, and spatial context.')">Submit Answer</button></div>
-                <div id="q1Feedback" class="feedback-banner"><div class="feedback-content"></div></div>
+                <div id="q1Feedback" class="feedback-banner" aria-live="polite"><div class="feedback-content"></div></div>
             </div>
 
             <!-- SLIDE 4: Pre-Assessment Q2 -->
@@ -294,7 +295,7 @@
                     <label class="quiz-option"><span class="option-letter">D</span><input type="radio" name="q2" value="d"><span>Experience Reality, a social media filter technology</span></label>
                 </div>
                 <div class="quiz-buttons"><button class="btn btn-primary" onclick="submitQuiz('q2','a','Correct! XR (Extended Reality) is an umbrella term that includes AR, VR, and MR.')">Submit Answer</button></div>
-                <div id="q2Feedback" class="feedback-banner"><div class="feedback-content"></div></div>
+                <div id="q2Feedback" class="feedback-banner" aria-live="polite"><div class="feedback-content"></div></div>
             </div>
 
             <!-- SLIDE 5: Pre-Assessment Q3 -->
@@ -308,16 +309,16 @@
                     <label class="quiz-option"><span class="option-letter">D</span><input type="radio" name="q3" value="d"><span>No, and I'm not sure how it would fit in my discipline</span></label>
                 </div>
                 <div class="quiz-buttons"><button class="btn btn-primary" onclick="submitQuiz('q3','any','Great! Your answer helps us understand where you are starting from. You will discover practical ways to integrate these technologies regardless of experience level.')">Submit Answer</button></div>
-                <div id="q3Feedback" class="feedback-banner"><div class="feedback-content"></div></div>
+                <div id="q3Feedback" class="feedback-banner" aria-live="polite"><div class="feedback-content"></div></div>
             </div>
 
             <!-- SLIDE 6: Pre-Assessment Results -->
             <div class="slide slide-content">
                 <div class="results-container">
-                    <div class="score-circle"><div class="score-number" id="preAssessmentScore">0</div><div class="score-label">out of 3</div></div>
+                    <div class="score-circle"><div class="score-number" id="preAssessmentScore" aria-live="polite">0</div><div class="score-label">out of 3</div></div>
                     <div class="results-text">
                         <h3>Pre-Assessment Complete!</h3>
-                        <p id="preAssessmentMessage" style="font-size:1.1rem;margin-bottom:20px;">Complete the pre-assessment to see your personalized learning path.</p>
+                        <p id="preAssessmentMessage" aria-live="polite" style="font-size:1.1rem;margin-bottom:20px;">Complete the pre-assessment to see your personalized learning path.</p>
                         <div id="preAssessmentPath" style="text-align:left;display:inline-block;max-width:600px;">
                             <p style="font-weight:600;color:var(--primary);margin-bottom:12px;">Your Personalized Learning Path:</p>
                             <div style="padding:15px;background:var(--light-gray);border-radius:8px;border-left:4px solid var(--accent);margin-bottom:10px;"><strong>Foundational Concepts</strong> — Spatial AI &amp; XR AI definitions, key differences, and core technologies</div>
@@ -414,15 +415,15 @@
                 <h2>Rethinking Bloom's Taxonomy for the AI Age</h2>
                 <p style="margin-bottom:30px;">As AI becomes more capable at lower-order thinking, we must redesign education.</p>
                 <div class="tabs-container">
-                    <div class="tabs-header">
-                        <button class="tab-button active" onclick="switchTab(event,'tab1')">🤖 What AI Does Well</button>
-                        <button class="tab-button" onclick="switchTab(event,'tab2')">🧠 What Humans Do Well</button>
-                        <button class="tab-button" onclick="switchTab(event,'tab3')">⚖️ The New Balance</button>
+                    <div class="tabs-header" role="tablist">
+                        <button class="tab-button active" role="tab" aria-selected="true" onclick="switchTab(event,'tab1')">🤖 What AI Does Well</button>
+                        <button class="tab-button" role="tab" aria-selected="false" onclick="switchTab(event,'tab2')">🧠 What Humans Do Well</button>
+                        <button class="tab-button" role="tab" aria-selected="false" onclick="switchTab(event,'tab3')">⚖️ The New Balance</button>
                     </div>
                     <div class="tabs-content">
-                        <div id="tab1" class="tab-panel active"><h4>AI Excels at Lower-Order Thinking</h4><p><strong>Remember:</strong> Memorizing facts (ChatGPT does this instantly)</p><p><strong>Understand:</strong> Explaining concepts (AI provides accurate explanations)</p><p><strong>Apply:</strong> Solving routine problems (AI executes procedures)</p><p style="margin-top:18px;padding:15px;background:var(--light-gray);border-radius:6px;"><strong>The Problem:</strong> Traditional education focused on these AI-accessible skills.</p></div>
-                        <div id="tab2" class="tab-panel"><h4>Humans Excel at Higher-Order Thinking</h4><p><strong>Analyze:</strong> Finding relationships (requires human judgment)</p><p><strong>Evaluate:</strong> Making judgments based on values and evidence</p><p><strong>Create:</strong> Generating original ideas tied to personal experience</p><p style="margin-top:18px;padding:15px;background:rgba(242,169,0,0.1);border-radius:6px;"><strong>The Opportunity:</strong> Focus on creativity, critical thinking, and problem-solving.</p></div>
-                        <div id="tab3" class="tab-panel"><h4>The Balanced Approach</h4><p><strong>Let AI handle:</strong> Information delivery, fact checking, data analysis</p><p><strong>Focus humans on:</strong> Creative synthesis, meaning-making, ethical reasoning, collaborative problem-solving</p><p style="margin-top:18px;padding:15px;background:var(--light-gray);border-radius:6px;"><strong>Result:</strong> Students develop valuable skills while AI becomes a learning tool.</p></div>
+                        <div id="tab1" class="tab-panel active" role="tabpanel"><h4>AI Excels at Lower-Order Thinking</h4><p><strong>Remember:</strong> Memorizing facts (ChatGPT does this instantly)</p><p><strong>Understand:</strong> Explaining concepts (AI provides accurate explanations)</p><p><strong>Apply:</strong> Solving routine problems (AI executes procedures)</p><p style="margin-top:18px;padding:15px;background:var(--light-gray);border-radius:6px;"><strong>The Problem:</strong> Traditional education focused on these AI-accessible skills.</p></div>
+                        <div id="tab2" class="tab-panel" role="tabpanel"><h4>Humans Excel at Higher-Order Thinking</h4><p><strong>Analyze:</strong> Finding relationships (requires human judgment)</p><p><strong>Evaluate:</strong> Making judgments based on values and evidence</p><p><strong>Create:</strong> Generating original ideas tied to personal experience</p><p style="margin-top:18px;padding:15px;background:rgba(242,169,0,0.1);border-radius:6px;"><strong>The Opportunity:</strong> Focus on creativity, critical thinking, and problem-solving.</p></div>
+                        <div id="tab3" class="tab-panel" role="tabpanel"><h4>The Balanced Approach</h4><p><strong>Let AI handle:</strong> Information delivery, fact checking, data analysis</p><p><strong>Focus humans on:</strong> Creative synthesis, meaning-making, ethical reasoning, collaborative problem-solving</p><p style="margin-top:18px;padding:15px;background:var(--light-gray);border-radius:6px;"><strong>Result:</strong> Students develop valuable skills while AI becomes a learning tool.</p></div>
                     </div>
                 </div>
             </div>
@@ -433,9 +434,9 @@
                 <h2>The Teacher's Role is Evolving</h2>
                 <p style="margin-bottom:30px;">From content delivery to learning experience design. <strong>Click to expand</strong> each transition:</p>
                 <div class="accordion-container">
-                    <div class="accordion-item"><div class="accordion-header" onclick="toggleAccordion(this)"><span>📚 From → To: Content Delivery</span><span class="accordion-icon">▼</span></div><div class="accordion-content"><p><strong>FROM:</strong> Lecturing and transmitting information</p><p><strong>TO:</strong> Curating and designing learning journeys with AI-powered personalization</p><p style="margin-top:12px;padding:12px;background:var(--light-gray);border-radius:6px;">Let AI handle information delivery. Focus on asking the right questions.</p></div></div>
-                    <div class="accordion-item"><div class="accordion-header" onclick="toggleAccordion(this)"><span>📝 From → To: Assessment</span><span class="accordion-icon">▼</span></div><div class="accordion-content"><p><strong>FROM:</strong> Testing memorization through quizzes and exams</p><p><strong>TO:</strong> Assessing creativity, problem-solving, and metacognitive reflection</p><p style="margin-top:12px;padding:12px;background:var(--light-gray);border-radius:6px;">AI can't grade genuine creativity. That's your irreplaceable value.</p></div></div>
-                    <div class="accordion-item"><div class="accordion-header" onclick="toggleAccordion(this)"><span>🔗 From → To: AI Integration</span><span class="accordion-icon">▼</span></div><div class="accordion-content"><p><strong>FROM:</strong> Avoiding AI to prevent integrity issues</p><p><strong>TO:</strong> Intentionally integrating Spatial AI and XR to enhance learning</p><p style="margin-top:12px;padding:12px;background:var(--light-gray);border-radius:6px;">Spatial AI and XR are tools for immersive, engaging experiences.</p></div></div>
+                    <div class="accordion-item"><div class="accordion-header" aria-expanded="false" onclick="toggleAccordion(this)"><span>📚 From → To: Content Delivery</span><span class="accordion-icon">▼</span></div><div class="accordion-content"><p><strong>FROM:</strong> Lecturing and transmitting information</p><p><strong>TO:</strong> Curating and designing learning journeys with AI-powered personalization</p><p style="margin-top:12px;padding:12px;background:var(--light-gray);border-radius:6px;">Let AI handle information delivery. Focus on asking the right questions.</p></div></div>
+                    <div class="accordion-item"><div class="accordion-header" aria-expanded="false" onclick="toggleAccordion(this)"><span>📝 From → To: Assessment</span><span class="accordion-icon">▼</span></div><div class="accordion-content"><p><strong>FROM:</strong> Testing memorization through quizzes and exams</p><p><strong>TO:</strong> Assessing creativity, problem-solving, and metacognitive reflection</p><p style="margin-top:12px;padding:12px;background:var(--light-gray);border-radius:6px;">AI can't grade genuine creativity. That's your irreplaceable value.</p></div></div>
+                    <div class="accordion-item"><div class="accordion-header" aria-expanded="false" onclick="toggleAccordion(this)"><span>🔗 From → To: AI Integration</span><span class="accordion-icon">▼</span></div><div class="accordion-content"><p><strong>FROM:</strong> Avoiding AI to prevent integrity issues</p><p><strong>TO:</strong> Intentionally integrating Spatial AI and XR to enhance learning</p><p style="margin-top:12px;padding:12px;background:var(--light-gray);border-radius:6px;">Spatial AI and XR are tools for immersive, engaging experiences.</p></div></div>
                 </div>
             </div>
 
@@ -450,7 +451,7 @@
                     <label class="quiz-option"><span class="option-letter">D</span><input type="radio" name="kc1" value="d"><span>Watching videos and animations</span></label>
                 </div>
                 <div class="quiz-buttons"><button class="btn btn-primary" onclick="submitQuiz('kc1','c','Correct! Teaching others produces 90% retention — the most effective strategy.')">Submit Answer</button></div>
-                <div id="kc1Feedback" class="feedback-banner"><div class="feedback-content"></div></div>
+                <div id="kc1Feedback" class="feedback-banner" aria-live="polite"><div class="feedback-content"></div></div>
             </div>
 
             <!-- SLIDE 14: Section Divider -->
@@ -509,9 +510,9 @@
                 <p style="margin-bottom:25px;">XR AI creates and powers immersive experiences. Navigate through key capabilities:</p>
                 <div class="carousel-container">
                     <div class="carousel-slides">
-                        <div class="carousel-slide active" style="background:linear-gradient(135deg,rgba(27,54,93,0.05),rgba(242,169,0,0.05));"><h4>🌐 Immersive Worlds</h4><p>AI generates interactive 3D environments. Students could explore ancient Rome with AI-powered characters that respond intelligently. The environment adapts based on student choices.</p></div>
-                        <div class="carousel-slide" style="background:linear-gradient(135deg,rgba(46,204,113,0.05),rgba(39,174,96,0.05));"><h4>🤖 Intelligent NPCs & Adaptive Content</h4><p>AI-powered characters respond naturally to student interactions — serving as tutors, mentors, or partners. Content difficulty adjusts based on performance in real-time.</p></div>
-                        <div class="carousel-slide" style="background:linear-gradient(135deg,rgba(242,169,0,0.05),rgba(231,76,60,0.05));"><h4>🎯 Customized Learning</h4><p>Each student receives a personalized experience tailored to their pace, style, and goals. One student explores at beginner level while another tackles advanced challenges.</p></div>
+                        <div class="carousel-slide active" style="background:linear-gradient(135deg,rgba(27,54,93,0.05),rgba(242,169,0,0.05));"><h3 style="font-size:1.4rem;color:var(--primary);margin-bottom:18px;font-weight:600;">🌐 Immersive Worlds</h3><p>AI generates interactive 3D environments. Students could explore ancient Rome with AI-powered characters that respond intelligently. The environment adapts based on student choices.</p></div>
+                        <div class="carousel-slide" style="background:linear-gradient(135deg,rgba(46,204,113,0.05),rgba(39,174,96,0.05));"><h3 style="font-size:1.4rem;color:var(--primary);margin-bottom:18px;font-weight:600;">🤖 Intelligent NPCs & Adaptive Content</h3><p>AI-powered characters respond naturally to student interactions — serving as tutors, mentors, or partners. Content difficulty adjusts based on performance in real-time.</p></div>
+                        <div class="carousel-slide" style="background:linear-gradient(135deg,rgba(242,169,0,0.05),rgba(231,76,60,0.05));"><h3 style="font-size:1.4rem;color:var(--primary);margin-bottom:18px;font-weight:600;">🎯 Customized Learning</h3><p>Each student receives a personalized experience tailored to their pace, style, and goals. One student explores at beginner level while another tackles advanced challenges.</p></div>
                     </div>
                     <div class="carousel-controls">
                         <button class="carousel-button" onclick="prevCarousel()">← Prev</button>
@@ -539,15 +540,15 @@
                 <h2>Spatial AI vs XR AI: Key Differences</h2>
                 <p style="margin-bottom:25px;">Both are important, but they solve different problems:</p>
                 <div class="tabs-container">
-                    <div class="tabs-header">
-                        <button class="tab-button active" onclick="switchTab(event,'spatial-ai')">🌍 Spatial AI</button>
-                        <button class="tab-button" onclick="switchTab(event,'xr-ai')">🥽 XR AI</button>
-                        <button class="tab-button" onclick="switchTab(event,'differences')">📊 Key Differences</button>
+                    <div class="tabs-header" role="tablist">
+                        <button class="tab-button active" role="tab" aria-selected="true" onclick="switchTab(event,'spatial-ai')">🌍 Spatial AI</button>
+                        <button class="tab-button" role="tab" aria-selected="false" onclick="switchTab(event,'xr-ai')">🥽 XR AI</button>
+                        <button class="tab-button" role="tab" aria-selected="false" onclick="switchTab(event,'differences')">📊 Key Differences</button>
                     </div>
                     <div class="tabs-content">
-                        <div id="spatial-ai" class="tab-panel active"><h4>Understanding the Physical World</h4><p><strong>What it does:</strong> Perceives, interprets, and models the physical world in real-time.</p><ul style="margin-top:12px;"><li>Recognizes objects and surfaces</li><li>Measures depth and distance</li><li>Tracks motion and movement</li><li>Enables navigation and spatial awareness</li></ul><p style="margin-top:15px;"><strong>Powers:</strong> Robotics, autonomous vehicles, smart glasses</p></div>
-                        <div id="xr-ai" class="tab-panel"><h4>Powering Immersive Experiences</h4><p><strong>What it does:</strong> Creates, manages, and personalizes immersive environments.</p><ul style="margin-top:12px;"><li>Generates 3D content and worlds</li><li>Controls intelligent NPCs and avatars</li><li>Adapts content to user performance</li><li>Personalizes learning experiences</li></ul><p style="margin-top:15px;"><strong>Powers:</strong> VR training, AR games, intelligent tutoring</p></div>
-                        <div id="differences" class="tab-panel"><h4>Quick Comparison</h4><table style="width:100%;border-collapse:collapse;margin-top:15px;"><tr style="background:var(--light-gray);"><th style="padding:10px;text-align:left;border-bottom:2px solid var(--border);">Aspect</th><th style="padding:10px;text-align:left;border-bottom:2px solid var(--border);">Spatial AI</th><th style="padding:10px;text-align:left;border-bottom:2px solid var(--border);">XR AI</th></tr><tr style="border-bottom:1px solid var(--border);"><td style="padding:10px;"><strong>Focus</strong></td><td style="padding:10px;">Understanding reality</td><td style="padding:10px;">Creating experiences</td></tr><tr style="border-bottom:1px solid var(--border);background:var(--light-gray);"><td style="padding:10px;"><strong>Input</strong></td><td style="padding:10px;">Sensors (cameras, LiDAR)</td><td style="padding:10px;">User inputs & performance</td></tr><tr style="border-bottom:1px solid var(--border);"><td style="padding:10px;"><strong>Output</strong></td><td style="padding:10px;">Environmental understanding</td><td style="padding:10px;">Immersive content</td></tr><tr style="background:var(--light-gray);"><td style="padding:10px;"><strong>In Education</strong></td><td style="padding:10px;">Smart labs, accessibility</td><td style="padding:10px;">Virtual simulations, tutoring</td></tr></table></div>
+                        <div id="spatial-ai" class="tab-panel active" role="tabpanel"><h4>Understanding the Physical World</h4><p><strong>What it does:</strong> Perceives, interprets, and models the physical world in real-time.</p><ul style="margin-top:12px;"><li>Recognizes objects and surfaces</li><li>Measures depth and distance</li><li>Tracks motion and movement</li><li>Enables navigation and spatial awareness</li></ul><p style="margin-top:15px;"><strong>Powers:</strong> Robotics, autonomous vehicles, smart glasses</p></div>
+                        <div id="xr-ai" class="tab-panel" role="tabpanel"><h4>Powering Immersive Experiences</h4><p><strong>What it does:</strong> Creates, manages, and personalizes immersive environments.</p><ul style="margin-top:12px;"><li>Generates 3D content and worlds</li><li>Controls intelligent NPCs and avatars</li><li>Adapts content to user performance</li><li>Personalizes learning experiences</li></ul><p style="margin-top:15px;"><strong>Powers:</strong> VR training, AR games, intelligent tutoring</p></div>
+                        <div id="differences" class="tab-panel" role="tabpanel"><h4>Quick Comparison</h4><table style="width:100%;border-collapse:collapse;margin-top:15px;"><tr style="background:var(--light-gray);"><th style="padding:10px;text-align:left;border-bottom:2px solid var(--border);">Aspect</th><th style="padding:10px;text-align:left;border-bottom:2px solid var(--border);">Spatial AI</th><th style="padding:10px;text-align:left;border-bottom:2px solid var(--border);">XR AI</th></tr><tr style="border-bottom:1px solid var(--border);"><td style="padding:10px;"><strong>Focus</strong></td><td style="padding:10px;">Understanding reality</td><td style="padding:10px;">Creating experiences</td></tr><tr style="border-bottom:1px solid var(--border);background:var(--light-gray);"><td style="padding:10px;"><strong>Input</strong></td><td style="padding:10px;">Sensors (cameras, LiDAR)</td><td style="padding:10px;">User inputs & performance</td></tr><tr style="border-bottom:1px solid var(--border);"><td style="padding:10px;"><strong>Output</strong></td><td style="padding:10px;">Environmental understanding</td><td style="padding:10px;">Immersive content</td></tr><tr style="background:var(--light-gray);"><td style="padding:10px;"><strong>In Education</strong></td><td style="padding:10px;">Smart labs, accessibility</td><td style="padding:10px;">Virtual simulations, tutoring</td></tr></table></div>
                     </div>
                 </div>
             </div>
@@ -563,7 +564,7 @@
                     <label class="quiz-option"><span class="option-letter">D</span><input type="radio" name="kc2" value="d"><span>XR AI is older technology; Spatial AI is newer</span></label>
                 </div>
                 <div class="quiz-buttons"><button class="btn btn-primary" onclick="submitQuiz('kc2','a','Exactly right! Spatial AI perceives the physical world. XR AI creates immersive virtual/mixed experiences. Both are complementary.')">Submit Answer</button></div>
-                <div id="kc2Feedback" class="feedback-banner"><div class="feedback-content"></div></div>
+                <div id="kc2Feedback" class="feedback-banner" aria-live="polite"><div class="feedback-content"></div></div>
             </div>
 
             <!-- SLIDE 22: Section Divider -->
@@ -592,10 +593,10 @@
                     <div>
                         <p style="margin-bottom:20px;">These technologies enable adaptive, personalized learning. <strong>Expand each section:</strong></p>
                         <div class="accordion-container">
-                            <div class="accordion-item"><div class="accordion-header" onclick="toggleAccordion(this)"><span>🎯 Intelligent Tutoring</span><span class="accordion-icon">▼</span></div><div class="accordion-content"><p>AI tutors explain concepts multiple ways, answer questions 24/7, and adjust difficulty based on understanding.</p></div></div>
-                            <div class="accordion-item"><div class="accordion-header" onclick="toggleAccordion(this)"><span>🌍 Dynamic Environments</span><span class="accordion-icon">▼</span></div><div class="accordion-content"><p>Learning spaces understand the student's surroundings. Students explore virtual cells or navigate historical sites at their own pace.</p></div></div>
-                            <div class="accordion-item"><div class="accordion-header" onclick="toggleAccordion(this)"><span>👥 Collaborative XR</span><span class="accordion-icon">▼</span></div><div class="accordion-content"><p>Students in different locations learn together in shared immersive spaces with personalized experiences.</p></div></div>
-                            <div class="accordion-item"><div class="accordion-header" onclick="toggleAccordion(this)"><span>📊 Adaptive Assessment</span><span class="accordion-icon">▼</span></div><div class="accordion-content"><p>XR AI continuously assesses understanding through interactions, detecting struggles and adjusting in real-time.</p></div></div>
+                            <div class="accordion-item"><div class="accordion-header" aria-expanded="false" onclick="toggleAccordion(this)"><span>🎯 Intelligent Tutoring</span><span class="accordion-icon">▼</span></div><div class="accordion-content"><p>AI tutors explain concepts multiple ways, answer questions 24/7, and adjust difficulty based on understanding.</p></div></div>
+                            <div class="accordion-item"><div class="accordion-header" aria-expanded="false" onclick="toggleAccordion(this)"><span>🌍 Dynamic Environments</span><span class="accordion-icon">▼</span></div><div class="accordion-content"><p>Learning spaces understand the student's surroundings. Students explore virtual cells or navigate historical sites at their own pace.</p></div></div>
+                            <div class="accordion-item"><div class="accordion-header" aria-expanded="false" onclick="toggleAccordion(this)"><span>👥 Collaborative XR</span><span class="accordion-icon">▼</span></div><div class="accordion-content"><p>Students in different locations learn together in shared immersive spaces with personalized experiences.</p></div></div>
+                            <div class="accordion-item"><div class="accordion-header" aria-expanded="false" onclick="toggleAccordion(this)"><span>📊 Adaptive Assessment</span><span class="accordion-icon">▼</span></div><div class="accordion-content"><p>XR AI continuously assesses understanding through interactions, detecting struggles and adjusting in real-time.</p></div></div>
                         </div>
                     </div>
                     <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&q=80" alt="Digital learning" class="slide-image">
@@ -613,7 +614,7 @@
                     <label class="quiz-option"><span class="option-letter">D</span><input type="radio" name="fa1" value="d"><span>A chatbot that answers student questions</span></label>
                 </div>
                 <div class="quiz-buttons"><button class="btn btn-primary" onclick="submitQuiz('fa1','a','Correct! This is Spatial AI — it perceives the physical classroom and uses that understanding for accessibility. The others are AI-powered but not spatial.')">Submit Answer</button></div>
-                <div id="fa1Feedback" class="feedback-banner"><div class="feedback-content"></div></div>
+                <div id="fa1Feedback" class="feedback-banner" aria-live="polite"><div class="feedback-content"></div></div>
             </div>
 
             <!-- SLIDE 26: Final Assessment Q2 -->
@@ -627,7 +628,7 @@
                     <label class="quiz-option"><span class="option-letter">D</span><input type="radio" name="fa2" value="d"><span>90%</span></label>
                 </div>
                 <div class="quiz-buttons"><button class="btn btn-primary" onclick="submitQuiz('fa2','d','Exactly! Teaching others produces 90% retention — the highest rate. XR can facilitate peer learning at scale.')">Submit Answer</button></div>
-                <div id="fa2Feedback" class="feedback-banner"><div class="feedback-content"></div></div>
+                <div id="fa2Feedback" class="feedback-banner" aria-live="polite"><div class="feedback-content"></div></div>
             </div>
 
             <!-- SLIDE 27: Final Assessment Q3 -->
@@ -641,7 +642,7 @@
                     <label class="quiz-option"><span class="option-letter">D</span><input type="radio" name="fa3" value="d"><span>Traditional skills that AI cannot replicate</span></label>
                 </div>
                 <div class="quiz-buttons"><button class="btn btn-primary" onclick="submitQuiz('fa3','b','Correct! Since AI excels at lower-order thinking, education should focus on creativity, critical thinking, and problem-solving.')">Submit Answer</button></div>
-                <div id="fa3Feedback" class="feedback-banner"><div class="feedback-content"></div></div>
+                <div id="fa3Feedback" class="feedback-banner" aria-live="polite"><div class="feedback-content"></div></div>
             </div>
 
             <!-- SLIDE 28: Final Assessment Q4 -->
@@ -655,16 +656,16 @@
                     <label class="quiz-option"><span class="option-letter">D</span><input type="radio" name="fa4" value="d"><span>Add XR without changing pedagogy</span></label>
                 </div>
                 <div class="quiz-buttons"><button class="btn btn-primary" onclick="submitQuiz('fa4','b','Exactly right! The most effective integration shifts teachers from content deliverers to learning experience designers.')">Submit Answer</button></div>
-                <div id="fa4Feedback" class="feedback-banner"><div class="feedback-content"></div></div>
+                <div id="fa4Feedback" class="feedback-banner" aria-live="polite"><div class="feedback-content"></div></div>
             </div>
 
             <!-- SLIDE 29: Assessment Results -->
             <div class="slide slide-content">
                 <div class="results-container">
-                    <div class="score-circle"><div class="score-number" id="finalScore">0</div><div class="score-label">out of 4</div></div>
+                    <div class="score-circle"><div class="score-number" id="finalScore" aria-live="polite">0</div><div class="score-label">out of 4</div></div>
                     <div class="results-text">
                         <h3>Assessment Complete!</h3>
-                        <p id="performanceMessage">Complete the final assessment to see your results.</p>
+                        <p id="performanceMessage" aria-live="polite">Complete the final assessment to see your results.</p>
                         <p style="margin-top:25px;font-weight:600;">Next Steps:</p>
                         <ul style="text-align:left;display:inline-block;">
                             <li>Reflect on how these technologies could transform your teaching</li>
@@ -721,14 +722,14 @@
         </div>
 
         <!-- PLAYBAR -->
-        <div class="playbar" role="toolbar" aria-label="Playbar">
+        <div class="playbar" role="toolbar" aria-label="Module playbar">
             <div class="playbar-left"><button class="playbar-button" id="prevBtn" onclick="previousSlide()" title="Previous" aria-label="Previous slide">&#10094;</button></div>
             <div class="playbar-center">
                 <button class="playbar-button" id="playBtn" onclick="togglePlayPause()" title="Play/Pause" aria-label="Play or pause">▶</button>
                 <div class="progress-bar" onclick="seekSlide(event)" role="slider" aria-label="Progress"><div class="progress-fill"></div></div>
             </div>
             <div class="playbar-right">
-                <span class="slide-counter"><span id="slideNum">1</span> / <span id="slideTotal">32</span></span>
+                <span class="slide-counter"><span id="slideNum" aria-live="polite">1</span> / <span id="slideTotal">32</span></span>
                 <button class="playbar-button" onclick="toggleCaptions()" title="Captions" aria-label="Closed captions">CC</button>
                 <button class="playbar-button" id="tocBtn" onclick="toggleTOC()" title="Table of Contents" aria-label="Table of Contents" aria-pressed="false">☰</button>
                 <button class="playbar-button" id="nextBtn" onclick="nextSlide()" title="Next" aria-label="Next slide">&#10095;</button>
@@ -857,17 +858,18 @@
 
         function switchTab(e, tabId) {
             const container = e.target.closest('.tabs-container');
-            container.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
-            container.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            container.querySelectorAll('.tab-button').forEach(function(b) { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+            container.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
             e.target.classList.add('active');
+            e.target.setAttribute('aria-selected','true');
             document.getElementById(tabId).classList.add('active');
         }
 
         function toggleAccordion(header) {
             const item = header.closest('.accordion-item'), container = item.closest('.accordion-container');
             const content = item.querySelector('.accordion-content'), isOpen = header.classList.contains('active');
-            container.querySelectorAll('.accordion-item').forEach(i => { i.querySelector('.accordion-header').classList.remove('active'); i.querySelector('.accordion-content').classList.remove('active'); });
-            if (!isOpen) { header.classList.add('active'); content.classList.add('active'); }
+            container.querySelectorAll('.accordion-item').forEach(function(i) { i.querySelector('.accordion-header').classList.remove('active'); i.querySelector('.accordion-header').setAttribute('aria-expanded','false'); i.querySelector('.accordion-content').classList.remove('active'); });
+            if (!isOpen) { header.classList.add('active'); header.setAttribute('aria-expanded','true'); content.classList.add('active'); }
         }
 
         function nextCarousel() {
@@ -894,6 +896,7 @@
             for (let i = 0; i < 30; i++) {
                 const piece = document.createElement('div');
                 piece.className = 'confetti-piece';
+                piece.setAttribute('aria-hidden', 'true');
                 piece.style.left = Math.random() * 100 + 'vw';
                 piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
                 piece.style.animationDelay = (Math.random() * 0.5) + 's';
@@ -906,25 +909,118 @@
             }
         }
 
-        function submitQuiz(questionName, correctAnswer, feedbackText) {
+        // Quiz feedback data - specific feedback for every option of every question
+        const quizFeedback = {
+            q1: {
+                correct: 'a',
+                correctMsg: 'Correct! Spatial AI is specifically about understanding and interpreting the physical world — perceiving objects, surfaces, depth, and spatial relationships in real-time.',
+                wrong: {
+                    b: 'Not quite right. Creating virtual worlds is actually a function of XR AI, not Spatial AI. Spatial AI focuses on understanding the real, physical world — think sensors, depth, and object recognition. You\'ll learn more about this distinction shortly!',
+                    c: 'Not quite right. While AI can perform translation, that\'s a different capability (natural language processing). Spatial AI specifically perceives and interprets physical environments — recognizing objects, surfaces, and motion in 3D space.',
+                    d: 'Not quite right. Image generation is a generative AI capability (like DALL-E). Spatial AI is about understanding real-world environments — sensing depth, tracking motion, and interpreting physical spaces. Think of it as AI that "sees" the world around you.'
+                }
+            },
+            q2: {
+                correct: 'a',
+                correctMsg: 'Correct! XR stands for Extended Reality — the umbrella term encompassing VR (Virtual Reality), AR (Augmented Reality), and MR (Mixed Reality).',
+                wrong: {
+                    b: 'Not quite right. XR doesn\'t stand for "Extra Reality." It stands for Extended Reality — the umbrella term covering AR (Augmented), VR (Virtual), and MR (Mixed Reality). These are all immersive technologies.',
+                    c: 'Not quite right. "Extreme Reality" isn\'t the right term. XR stands for Extended Reality, encompassing AR, VR, and MR. It\'s used in education, healthcare, entertainment, and many other fields — not just extreme applications.',
+                    d: 'Not quite right. "Experience Reality" isn\'t correct. XR stands for Extended Reality, and it\'s the umbrella term that covers Augmented Reality, Virtual Reality, and Mixed Reality technologies.'
+                }
+            },
+            q3: {
+                correct: 'any',
+                correctMsg: 'Thank you for sharing! Every experience level is welcome in this module. Your perspective adds value to our learning community.',
+                wrong: {}
+            },
+            kc1: {
+                correct: 'c',
+                correctMsg: 'Exactly right! Teaching others and immediate application produces 90% retention — the highest rate on the Learning Pyramid. This is why peer teaching and hands-on practice are so powerful in education.',
+                wrong: {
+                    a: 'Not quite right. Lecture only produces about 5% retention — one of the lowest rates on the Learning Pyramid. Active methods like teaching others (90%) are far more effective. Think about what the Learning Pyramid showed about passive vs. active learning.',
+                    b: 'Not quite right. Practice by doing produces about 75% retention, which is excellent but not the highest. The peak is teaching others at 90%. Review the Learning Pyramid to see the full hierarchy from passive (5%) to active (90%) methods.',
+                    d: 'Not quite right. Reading produces only about 10% retention. The Learning Pyramid shows that passive methods like reading are significantly less effective than active ones. Teaching others produces 90% retention — the highest rate.'
+                }
+            },
+            kc2: {
+                correct: 'a',
+                correctMsg: 'Exactly right! Spatial AI perceives the physical world — objects, surfaces, depth, and motion. XR AI creates immersive virtual and mixed experiences. Both are complementary technologies that together enable powerful educational applications.',
+                wrong: {
+                    b: 'Not quite right. They are actually distinct technologies with different purposes. Spatial AI understands the physical world (objects, depth, motion), while XR AI creates immersive virtual experiences. They complement each other but solve fundamentally different problems.',
+                    c: 'Not quite right. The distinction isn\'t about VR vs AR specifically. Spatial AI perceives the real, physical world using sensors and depth detection. XR AI powers immersive experiences across ALL of VR, AR, and MR. Think about what each technology focuses on.',
+                    d: 'Not quite right. This isn\'t about which technology is newer or older. The key difference is their focus: Spatial AI understands real environments (physical world perception), while XR AI creates immersive digital experiences (virtual world creation).'
+                }
+            },
+            fa1: {
+                correct: 'a',
+                correctMsg: 'Correct! A smart classroom that understands physical layout for accessibility is Spatial AI — it perceives the physical environment and uses that understanding to assist students. The other options involve AI but don\'t specifically require spatial awareness.',
+                wrong: {
+                    b: 'Not quite right. An AI essay writing tutor uses natural language processing, not Spatial AI. Spatial AI specifically involves understanding physical environments — objects, surfaces, spatial relationships. Think about which option involves perceiving the physical classroom space.',
+                    c: 'Not quite right. A VR game about history uses XR technology, but it doesn\'t specifically demonstrate Spatial AI. Spatial AI is about understanding the real, physical world — not creating virtual ones. Which option involves the AI understanding a physical environment?',
+                    d: 'Not quite right. A chatbot uses conversational AI (NLP), not Spatial AI. Spatial AI specifically perceives and interprets physical environments. Think about which option involves the AI understanding the actual physical space of a classroom.'
+                }
+            },
+            fa2: {
+                correct: 'd',
+                correctMsg: 'Exactly! Teaching others produces 90% retention — the highest rate on the Learning Pyramid. XR technologies can facilitate peer learning at scale, making this powerful method accessible to more students.',
+                wrong: {
+                    a: 'Not quite right. 30% corresponds to demonstration on the Learning Pyramid. Teaching others achieves much higher retention at 90%. Remember, the pyramid shows passive methods (lecture at 5%) at the top and active methods (teaching others at 90%) at the bottom.',
+                    b: 'Not quite right. 50% corresponds to discussion groups on the Learning Pyramid. Teaching others achieves even higher retention at 90%. The pyramid illustrates that the more actively a student engages, the more they retain.',
+                    c: 'Not quite right. 75% corresponds to practice by doing on the Learning Pyramid. While that\'s excellent, teaching others achieves the highest retention at 90%. Review the pyramid to see the full progression from passive to active learning.'
+                }
+            },
+            fa3: {
+                correct: 'b',
+                correctMsg: 'Correct! Since AI excels at lower-order thinking (remembering, understanding), education should focus on higher-order skills — creativity, critical analysis, problem-solving, and ethical reasoning — that uniquely require human judgment.',
+                wrong: {
+                    a: 'Not quite right. Memorization and fact recall are exactly what AI does best. Since AI can instantly recall vast amounts of information, education should shift focus to higher-order thinking skills that require human judgment — creativity, critical analysis, and problem-solving.',
+                    c: 'Not quite right. While learning to use AI tools is valuable, it\'s not the BEST focus. The deeper shift is toward higher-order thinking — creativity, critical analysis, and problem-solving — skills that AI cannot replicate. Tool skills change; thinking skills endure.',
+                    d: 'Not quite right. This is partially correct but too vague. The best focus is specifically on higher-order thinking: creativity, critical analysis, problem-solving, and ethical reasoning. These are the skills at the top of Bloom\'s Taxonomy where humans excel over AI.'
+                }
+            },
+            fa4: {
+                correct: 'b',
+                correctMsg: 'Exactly right! The most effective integration of Spatial AI and XR AI shifts teachers from content deliverers to learning experience designers, creating immersive journeys where students actively practice and solve real problems.',
+                wrong: {
+                    a: 'Not quite right. Simply increasing lecture time — even with AI-generated slides — keeps the approach passive. The Learning Pyramid shows lecture produces only 5% retention. The shift should be toward active, immersive, student-centered experiences.',
+                    c: 'Not quite right. Replacing human instruction entirely misses the point. Teachers are irreplaceable as learning architects and mentors. The best approach uses Spatial AI and XR AI as tools that teachers orchestrate to create engaging learning experiences.',
+                    d: 'Not quite right. Adding XR technology without changing pedagogy won\'t improve outcomes. The technology must be integrated with redesigned learning experiences — immersive, personalized journeys where students actively engage rather than passively observe.'
+                }
+            }
+        };
+
+        function submitQuiz(questionName, correctAnswer, defaultFeedback) {
             const selected = document.querySelector('input[name="' + questionName + '"]:checked');
             if (!selected) { alert('Please select an answer.'); return; }
             const feedbackDiv = document.getElementById(questionName + 'Feedback');
+            const quizData = quizFeedback[questionName];
             const isCorrect = selected.value === correctAnswer || correctAnswer === 'any';
+            
+            var feedbackText;
+            if (isCorrect || correctAnswer === 'any') {
+                feedbackText = quizData ? quizData.correctMsg : defaultFeedback;
+            } else {
+                feedbackText = (quizData && quizData.wrong && quizData.wrong[selected.value]) 
+                    ? quizData.wrong[selected.value] 
+                    : 'Not quite. ' + defaultFeedback;
+            }
+            
             feedbackDiv.classList.add('show');
             feedbackDiv.classList.remove('feedback-correct', 'feedback-incorrect');
             feedbackDiv.classList.add(isCorrect ? 'feedback-correct' : 'feedback-incorrect');
-            feedbackDiv.querySelector('.feedback-content').textContent = (isCorrect || correctAnswer === 'any') ? feedbackText : 'Not quite. ' + feedbackText;
+            feedbackDiv.querySelector('.feedback-content').textContent = feedbackText;
+            
             if (isCorrect) {
                 if (questionName.startsWith('q')) preAssessmentScore++;
                 if (questionName.startsWith('fa')) finalAssessmentScore++;
                 showConfetti();
             } else {
                 feedbackDiv.style.animation = 'shake 0.5s ease';
-                setTimeout(() => feedbackDiv.style.animation = '', 500);
+                setTimeout(function() { feedbackDiv.style.animation = ''; }, 500);
             }
+            
             document.getElementById('preAssessmentScore').textContent = preAssessmentScore;
-            // Update personalized pre-assessment message
             var preMsg = document.getElementById('preAssessmentMessage');
             if (preMsg) {
                 if (preAssessmentScore === 3) {
@@ -937,10 +1033,12 @@
                     preMsg.textContent = 'These are new concepts for you — and that\'s perfectly fine! This module is designed to take you from the basics to practical application. Every section builds on the last.';
                 }
             }
+            
             document.getElementById('finalScore').textContent = finalAssessmentScore;
             var msg = document.getElementById('performanceMessage');
             if (finalAssessmentScore === 4) msg.textContent = 'Excellent work! You have a strong understanding of Spatial AI, XR, and their potential in education.';
             else if (finalAssessmentScore >= 2) msg.textContent = 'Good effort! Consider revisiting sections where you missed questions.';
+            
             document.querySelectorAll('input[name="' + questionName + '"]').forEach(function(inp) { inp.disabled = true; });
             feedbackDiv.parentElement.querySelectorAll('.quiz-option').forEach(function(opt) {
                 var radio = opt.querySelector('input');
